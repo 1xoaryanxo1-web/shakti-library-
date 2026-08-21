@@ -25,7 +25,7 @@ body::before{
  content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;
  background-image:radial-gradient(#0e856d 0.8px,transparent 0.8px);background-size:24px 24px;
 }
-.app{max-width:1000px;margin:auto;padding:24px 16px 70px;position:relative}
+.app{max-width:1050px;margin:auto;padding:24px 16px 70px;position:relative}
 .hero{
  min-height:440px;display:flex;flex-direction:column;align-items:center;justify-content:center;
  text-align:center;position:relative;overflow:hidden;border-radius:36px;
@@ -44,11 +44,35 @@ body::before{
 .scroll{margin-top:36px;padding:10px 18px;border:1px solid rgba(255,255,255,0.2);border-radius:99px;color:#a6d4cc;font-size:11px;letter-spacing:1.5px;animation:bounce 2s infinite}
 @keyframes bounce{50%{transform:translateY(6px)}}
 
-.card{background:rgba(255, 255, 255, 0.85);border:1px solid var(--line);border-radius:30px;padding:26px;box-shadow:0 20px 50px rgba(11, 37, 34, 0.06);margin-bottom:20px;backdrop-filter:blur(16px)}
+.card{background:rgba(255, 255, 255, 0.88);border:1px solid var(--line);border-radius:30px;padding:26px;box-shadow:0 20px 50px rgba(11, 37, 34, 0.06);margin-bottom:22px;backdrop-filter:blur(16px)}
 .heading{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:22px}
 .heading h2{margin:0;font-size:23px;letter-spacing:-.7px}
 .heading p{margin:0;color:var(--muted);font-size:12px}
 
+/* Layered Shift Slide Styles */
+.shift-slide-container{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.shift-card{
+ background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px 14px;text-align:center;cursor:pointer;transition:.3s;
+ box-shadow:0 6px 15px rgba(11,37,34,0.03);position:relative;overflow:hidden;
+}
+.shift-card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,133,109,0.05),transparent);opacity:0;transition:.3s}
+.shift-card:hover{transform:translateY(-4px);border-color:var(--green);box-shadow:0 12px 25px rgba(14,133,109,0.12)}
+.shift-card.active{background:var(--dark);color:#fff;border-color:var(--dark);box-shadow:0 12px 30px rgba(8,29,26,0.25)}
+.shift-card.active .shift-time{color:#6af0d4}
+.shift-card.active .shift-desc{color:#b3d4cd}
+.shift-title{font-size:14px;font-weight:900;margin-bottom:6px}
+.shift-time{font-size:12px;color:var(--green);font-weight:800;margin-bottom:8px}
+.shift-desc{font-size:11px;color:var(--muted);line-height:1.4}
+
+.shift-detail-box{
+ background:linear-gradient(145deg,#081d1a,#103831);color:#fff;border-radius:22px;padding:22px;margin-top:15px;
+ display:flex;justify-content:space-between;align-items:center;gap:20px;box-shadow:0 10px 30px rgba(8,29,26,0.15)
+}
+.shift-detail-box h3{margin:0 0 5px;font-size:20px;letter-spacing:-.5px}
+.shift-detail-box p{margin:0;color:#a9c7c0;font-size:12px;line-height:1.4}
+.shift-badge{background:var(--green2);color:#052b24;font-size:11px;font-weight:900;padding:8px 14px;border-radius:99px;white-space:nowrap}
+
+/* Interactive Study Day Section */
 .day{position:relative;padding:14px 0 5px}
 .rail{height:8px;background:#c9e4dd;border-radius:99px;position:absolute;left:7%;right:7%;top:29px;overflow:hidden}
 .progress{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--green2));border-radius:99px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
@@ -65,12 +89,13 @@ body::before{
 .clock{font-size:32px;font-weight:900;color:#6af0d4;white-space:nowrap}
 input{display:none}
 
+/* Pricing Slide Styles */
 .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
-.tab{cursor:pointer;border:1px solid var(--line);border-radius:16px;padding:14px 8px;text-align:center;background:#fff;font-weight:800;font-size:13px;transition:.25s}
+.tab{cursor:pointer;border:1px solid var(--line);border-radius:16px;padding:14px 8px;text-align:center;background:#fff;font-weight:800;font-size:13px;transition:.25s;box-shadow:0 4px 10px rgba(0,0,0,0.02)}
 .tab:hover{transform:translateY(-3px);border-color:var(--green);box-shadow:0 12px 24px rgba(14, 133, 109, 0.1)}
 #s6:checked~.tabs label[for=s6],#s12a:checked~.tabs label[for=s12a],#s12b:checked~.tabs label[for=s12b],#s18:checked~.tabs label[for=s18]{background:var(--dark);color:#fff;border-color:var(--dark);box-shadow:0 10px 25px rgba(8, 29, 26, 0.2)}
 
-.panel{display:none;border-radius:26px;padding:26px;background:linear-gradient(135deg,#f2fbf7,#e4f6f0);border:1px solid #cce8e0;animation:rise .35s ease}
+.panel{display:none;border-radius:26px;padding:26px;background:linear-gradient(135deg,#f2fbf7,#e4f6f0);border:1px solid #cce8e0;animation:rise .35s ease;box-shadow:inset 0 2px 8px rgba(14,133,109,0.03)}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 #s6:checked~.panels .p6,#s12a:checked~.panels .p12a,#s12b:checked~.panels .p12b,#s18:checked~.panels .p18{display:block}
 
@@ -94,21 +119,26 @@ input{display:none}
 .p18 .reserve strong{color:#6c5214}
 .p18 .reserve-title{font-size:16px;font-weight:900;color:#524017;margin-bottom:4px}
 
-.facilities{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+/* Multi-Layered Interactive Facilities */
+.facilities{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .facility{
- padding:20px;border:1px solid var(--line);border-radius:20px;background:#fff;
- transition:.25s;cursor:default;position:relative;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.02)
+ padding:22px;border:1px solid var(--line);border-radius:22px;background:#fff;
+ transition:.3s;cursor:pointer;position:relative;overflow:hidden;box-shadow:0 6px 15px rgba(0,0,0,0.02)
 }
+.facility::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,var(--mint),transparent);opacity:0;transition:.3s}
 .facility::after{content:"";position:absolute;width:60px;height:60px;border-radius:50%;background:var(--mint);right:-20px;top:-20px;transition:.3s}
-.facility:hover{transform:translateY(-5px);box-shadow:0 16px 32px rgba(11, 37, 34, 0.08);border-color:#9be0d2}
-.facility:hover::after{transform:scale(1.6)}
-.icon{font-size:22px;position:relative;z-index:1}
+.facility:hover{transform:translateY(-6px);box-shadow:0 18px 35px rgba(11, 37, 34, 0.08);border-color:#9be0d2}
+.facility:hover::before{opacity:.4}
+.facility:hover::after{transform:scale(1.7)}
+.facility.active-facility{border-color:var(--green);box-shadow:0 0 0 3px rgba(14,133,109,0.2), 0 15px 30px rgba(11,37,34,0.1);background:linear-gradient(135deg,#ffffff,#f2fbf7)}
+.icon{font-size:24px;position:relative;z-index:1;display:inline-block;transition:.3s}
+.facility:hover .icon{transform:scale(1.15) rotate(5deg)}
 .facility b{display:block;margin-top:10px;font-size:14px;position:relative;z-index:1}
 .facility span{display:block;color:var(--muted);font-size:11px;margin-top:6px;line-height:1.4;position:relative;z-index:1}
 
 .reserve-showcase{
  background:linear-gradient(145deg,#071d1a,#103b33);color:#fff;border-radius:30px;padding:28px;
- position:relative;overflow:hidden;margin-bottom:20px;box-shadow:0 20px 40px rgba(8, 29, 26, 0.15)
+ position:relative;overflow:hidden;margin-bottom:22px;box-shadow:0 20px 40px rgba(8, 29, 26, 0.15)
 }
 .reserve-showcase::before{content:"";position:absolute;width:320px;height:320px;border-radius:50%;right:-100px;top:-170px;background:rgba(40, 183, 152, 0.15)}
 .rs-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center;position:relative}
@@ -127,6 +157,7 @@ input{display:none}
 .cta b{font-size:17px}
 
 @media(max-width:700px){
+ .shift-slide-container{grid-template-columns:repeat(2,1fr)}
  .tabs{grid-template-columns:repeat(2,1fr)}
  .facilities{grid-template-columns:repeat(2,1fr)}
  .top{display:block}
@@ -135,6 +166,7 @@ input{display:none}
  .hero{min-height:380px}
 }
 @media(max-width:450px){
+ .shift-slide-container{grid-template-columns:1fr}
  .facilities{grid-template-columns:1fr}
  .clock{font-size:24px}
  .day-detail{display:block}
@@ -154,10 +186,47 @@ input{display:none}
     <div class="scroll">EXPLORE YOUR STUDY DAY ↓</div>
   </section>
 
+  <!-- NEW: Shifts Interactive Slide Overview -->
+  <section class="card">
+    <div class="heading">
+      <h2>Explore Available Shifts</h2>
+      <p>Tap a shift card to inspect timings & focus style</p>
+    </div>
+    <div class="shift-slide-container">
+      <div class="shift-card active" data-title="Morning Shift (6 Hours)" data-time="6:00 AM — 12:00 PM" data-desc="Early morning focus window designed for high energy and quiet study blocks.">
+        <div class="shift-title">Morning Shift</div>
+        <div class="shift-time">6 Hours</div>
+        <div class="shift-desc">Tap to view</div>
+      </div>
+      <div class="shift-card" data-title="Day Shift (12 Hours)" data-time="6:00 AM — 6:00 PM" data-desc="Comprehensive half-day access for rigorous daily preparation routines.">
+        <div class="shift-title">Day Shift</div>
+        <div class="shift-time">12 Hours</div>
+        <div class="shift-desc">Tap to view</div>
+      </div>
+      <div class="shift-card" data-title="Noon → Night (12 Hours)" data-time="12:00 PM — 12:00 AM" data-desc="Afternoon through midnight block tailored for late-night learners.">
+        <div class="shift-title">Noon → Night</div>
+        <div class="shift-time">12 Hours</div>
+        <div class="shift-desc">Tap to view</div>
+      </div>
+      <div class="shift-card" data-title="Full Day Premium (18 Hours)" data-time="6:00 AM — 12:00 AM" data-desc="Maximum access with exclusive reserved seating for ultimate consistency.">
+        <div class="shift-title">Full Day</div>
+        <div class="shift-time">18 Hours</div>
+        <div class="shift-desc">Tap to view</div>
+      </div>
+    </div>
+    <div class="shift-detail-box">
+      <div>
+        <h3 id="shiftDetailTitle">Morning Shift (6 Hours)</h3>
+        <p id="shiftDetailDesc">Early morning focus window designed for high energy and quiet study blocks.</p>
+      </div>
+      <div class="shift-badge" id="shiftDetailTime">6:00 AM — 12:00 PM</div>
+    </div>
+  </section>
+
   <section class="card">
     <div class="heading">
       <h2>Interactive Study Day</h2>
-      <p>Tap a time to explore</p>
+      <p>Tap a time to explore schedule</p>
     </div>
     <div class="day">
       <div class="rail"><div class="progress" id="progress"></div></div>
@@ -177,10 +246,11 @@ input{display:none}
     </div>
   </section>
 
+  <!-- Dedicated Pricing Slide with Layers -->
   <section class="card">
     <div class="heading">
-      <h2>Memberships</h2>
-      <p>Price + shift together</p>
+      <h2>Membership Pricing Plans</h2>
+      <p>Select a tab to view pricing & details</p>
     </div>
     <input id="s6" name="shift" type="radio" checked>
     <input id="s12a" name="shift" type="radio">
@@ -196,7 +266,7 @@ input{display:none}
       <div class="panel p6">
         <div class="top">
           <div>
-            <div class="eyebrow">6-hour membership</div>
+            <div class="eyebrow">6-hour membership tier</div>
             <h3>Morning Shift</h3>
             <div class="timing">6:00 AM — 12:00 PM</div>
           </div>
@@ -209,7 +279,7 @@ input{display:none}
       <div class="panel p12a">
         <div class="top">
           <div>
-            <div class="eyebrow">12-hour membership</div>
+            <div class="eyebrow">12-hour membership tier</div>
             <h3>Day Shift</h3>
             <div class="timing">6:00 AM — 6:00 PM</div>
           </div>
@@ -222,7 +292,7 @@ input{display:none}
       <div class="panel p12b">
         <div class="top">
           <div>
-            <div class="eyebrow">12-hour membership</div>
+            <div class="eyebrow">12-hour membership tier</div>
             <h3>Noon → Night</h3>
             <div class="timing">12:00 PM — 12:00 AM</div>
           </div>
@@ -235,7 +305,7 @@ input{display:none}
       <div class="panel p18">
         <div class="top">
           <div>
-            <div class="eyebrow">Premium membership</div>
+            <div class="eyebrow">Premium membership tier</div>
             <h3>Full Day</h3>
             <div class="timing">6:00 AM — 12:00 AM</div>
           </div>
@@ -243,7 +313,7 @@ input{display:none}
         </div>
         <div class="cover"><i style="width:100%"></i></div>
         <div class="included"><span class="pill">AC</span><span class="pill">CCTV</span><span class="pill">Personal Desk</span><span class="pill">Power Socket</span><span class="pill">Comfortable Chair</span></div>
-        <div class="reserve"><span class="star">★</span><div><div class="reserve-title">Exclusive Seat Reservation</div><strong>Only the 18-hour shift includes seat reservation.</strong><br>Reserve your preferred seat so you have a dedicated place waiting for you when you arrive. Ideal for students who want consistency, convenience and zero uncertainty about where they will study.</div></div>
+        <div class="reserve"><span class="star">★</span><div><div class="reserve-title">Exclusive Seat Reservation</div><strong>Only the 18-hour shift includes seat reservation.</strong><br>Reserve your preferred seat so you have a dedicated place waiting for you when you arrive. Ideal for students who want consistency, convenience and zero uncertainty.</div></div>
       </div>
     </div>
   </section>
@@ -263,21 +333,40 @@ input{display:none}
     </div>
   </section>
 
+  <!-- Multi-Layered Interactive Facilities Section -->
   <section class="card">
     <div class="heading">
-      <h2>Premium Study Environment</h2>
-      <p>Built for serious preparation</p>
+      <h2>Multi-Layered Study Environment</h2>
+      <p>Click any facility card to inspect layer details</p>
     </div>
     <div class="facilities">
-      <div class="facility"><div class="icon">❄️</div><b>Air Conditioning</b><span>Comfortable climate for focused study.</span></div>
-      <div class="facility"><div class="icon">◉</div><b>CCTV Security</b><span>Continuous surveillance for a secure environment.</span></div>
-      <div class="facility"><div class="icon">▤</div><b>Personal Study Desk</b><span>Spacious 2.5 ft desk for your study setup.</span></div>
-      <div class="facility"><div class="icon">⚡</div><b>Built-in Power Socket</b><span>Charge your devices conveniently at your desk.</span></div>
-      <div class="facility"><div class="icon">▰</div><b>Comfortable Fixed Chair</b><span>Dedicated seating designed for long sessions.</span></div>
-      <div class="facility"><div class="icon">💡</div><b>Dedicated Lighting</b><span>Well-lit study environment with five wall lights.</span></div>
-      <div class="facility"><div class="icon">📶</div><b>200 Mbps Wi-Fi</b><span>Fast, reliable connectivity for online classes and study.</span></div>
-      <div class="facility"><div class="icon">✦</div><b>Hygienic Environment</b><span>Clean, maintained surroundings for comfortable study.</span></div>
-      <div class="facility"><div class="icon">◎</div><b>Quality Student Community</b><span>A focused environment surrounded by serious learners.</span></div>
+      <div class="facility" onclick="selectFacility(this, 'Air Conditioning', 'Maintained climate control system providing optimal cool temperature for long study sessions.')">
+        <div class="icon">❄️</div><b>Air Conditioning</b><span>Comfortable climate for focused study.</span>
+      </div>
+      <div class="facility" onclick="selectFacility(this, 'CCTV Security', '24/7 continuous digital surveillance protecting the library premises and student property.')">
+        <div class="icon">◉</div><b>CCTV Security</b><span>Continuous surveillance for a secure environment.</span>
+      </div>
+      <div class="facility" onclick="selectFacility(this, 'Personal Study Desk', 'Spacious 2.5 ft dedicated desk designed specifically with extra room for heavy books and laptops.')">
+        <div class="icon">▤</div><b>Personal Study Desk</b><span>Spacious 2.5 ft desk for your study setup.</span>
+      </div>
+      <div class="facility" onclick="selectFacility(this, 'Built-in Power Socket', 'Individual electricity source right at your desktop to keep all your study gadgets powered.')">
+        <div class="icon">⚡</div><b>Built-in Power Socket</b><span>Charge your devices conveniently at your desk.</span>
+      </div>
+      <div class="facility" onclick="selectFacility(this, 'Comfortable Fixed Chair', 'Ergonomically engineered posture-support seating built to eliminate fatigue during multi-hour reading.')">
+        <div class="icon">▰</div><b>Comfortable Fixed Chair</b><span>Dedicated seating designed for long sessions.</span>
+      </div>
+      <div class="facility" onclick="selectFacility(this, 'Dedicated Lighting', 'Bright, anti-glare illumination setup across all desks designed to protect your eyes.')">
+        <div class="icon">💡</div><b>Dedicated Lighting</b><span>Well-lit study environment with wall lights.</span>
+      </div>
+      <div class="facility" onclick="selectFacility(this, '200 Mbps High-Speed Wi-Fi', 'Blazing fast internet connectivity optimized for attending live classes and streaming study material.')">
+        <div class="icon">📶</div><b>200 Mbps Wi-Fi</b><span>Fast, reliable connectivity for online classes.</span>
+      </div>
+      <div class="facility" onclick="selectFacility(this, 'Hygienic Environment', 'Daily deep cleaning schedules and sanitized surroundings to ensure a fresh ambiance.')">
+        <div class="icon">✦</div><b>Hygienic Environment</b><span>Clean, maintained surroundings for comfortable study.</span>
+      </div>
+      <div class="facility" onclick="selectFacility(this, 'Quality Student Community', 'Surround yourself with driven aspirants preparing for competitive exams in a distraction-free zone.')">
+        <div class="icon">◎</div><b>Quality Student Community</b><span>A focused environment surrounded by serious learners.</span>
+      </div>
     </div>
   </section>
 
@@ -287,6 +376,23 @@ input{display:none}
 </div>
 
 <script>
+// Shift Slide Interactions
+const shiftCards = document.querySelectorAll('.shift-card');
+const shiftTitleElem = document.getElementById('shiftDetailTitle');
+const shiftDescElem = document.getElementById('shiftDetailDesc');
+const shiftTimeElem = document.getElementById('shiftDetailTime');
+
+shiftCards.forEach(card => {
+  card.addEventListener('click', () => {
+    shiftCards.forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    shiftTitleElem.textContent = card.dataset.title;
+    shiftDescElem.textContent = card.dataset.desc;
+    shiftTimeElem.textContent = card.dataset.time;
+  });
+});
+
+// Interactive Study Day Timeline
 const points = document.querySelectorAll('.point');
 const progress = document.getElementById('progress');
 const title = document.getElementById('dayTitle');
@@ -304,6 +410,7 @@ points.forEach(p => {
   });
 });
 
+// Interactive Seat Grid
 const seatGrid = document.getElementById('seats');
 const seatNote = document.getElementById('seatNote');
 
@@ -317,6 +424,12 @@ for (let i = 1; i <= 15; i++) {
     seatNote.textContent = `Seat ${i} selected — with the 18-hour membership, this is the kind of preferred seat you can reserve for your study routine.`;
   });
   seatGrid.appendChild(s);
+}
+
+// Multi-layered Facility Click Handler
+function selectFacility(element, name, details) {
+  document.querySelectorAll('.facility').forEach(f => f.classList.remove('active-facility'));
+  element.classList.add('active-facility');
 }
 </script>
 </body>
