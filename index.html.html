@@ -1,0 +1,2080 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>SHAKTI LIBRARY | Premium Self-Study Sanctuary</title>
+    <meta name="description" content="SHAKTI LIBRARY in Rampur, UP — A quiet self-study sanctuary equipped with Single 2 kW AC, fixed seating, fiber Wi-Fi, CCTV security, and flexible shift timings.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#0B0B0A',          /* Charcoal Black */
+                            surface: '#141412',     /* Dark Surface */
+                            card: '#1C1B18',        /* Walnut Card */
+                            border: '#38322B',      /* Muted Bronze Line */
+                            text: '#F3E8CF',        /* Warm Ivory */
+                            gold: '#C9A44C',        /* Antique Gold */
+                            walnut: '#4A2E1B',      /* Dark Walnut */
+                            maroon: '#6F1D1B',      /* Deep Maroon */
+                            saffron: '#D97706',     /* Saffron Accent */
+                            emerald: '#10B981',
+                            muted: '#9E9484',
+                            white: '#FAF7EF'        /* Soft White */
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- CDN Libraries: Three.js, GSAP, ScrollTrigger, Lucide Icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Architectural Visual Styles -->
+    <style>
+        body {
+            background-color: #0B0B0A;
+            color: #F3E8CF;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        #libraryCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.85;
+        }
+
+        .palace-panel {
+            background: rgba(20, 20, 18, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(201, 164, 76, 0.25);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.85);
+        }
+
+        .palace-card {
+            background: #1C1B18;
+            border: 1px solid rgba(201, 164, 76, 0.2);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (min-width: 768px) {
+            .palace-card:hover {
+                border-color: #C9A44C;
+                box-shadow: 0 15px 35px -10px rgba(201, 164, 76, 0.25);
+                transform: translateY(-4px);
+            }
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FAF7EF 0%, #F3E8CF 30%, #C9A44C 70%, #D97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cursor-glow {
+            pointer-events: none;
+            background: radial-gradient(600px circle at var(--x) var(--y), rgba(201, 164, 76, 0.06), transparent 40%);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0B0A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #38322B;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #C9A44C;
+        }
+
+        .step-pill.active {
+            background: #C9A44C;
+            color: #0B0B0A;
+            font-weight: 700;
+            box-shadow: 0 0 15px rgba(201, 164, 76, 0.4);
+        }
+
+        .step-pill.completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .desk-3d-badge {
+            width: 44px;
+            height: 44px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 1px solid rgba(201, 164, 76, 0.35);
+            background: #141412;
+        }
+
+        /* Custom Interactive Range Input */
+        .time-slider-input {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: rgba(56, 50, 43, 0.8);
+            outline: none;
+            border: 1px solid rgba(201, 164, 76, 0.3);
+            cursor: pointer;
+        }
+        .time-slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #C9A44C;
+            box-shadow: 0 0 10px rgba(201, 164, 76, 0.8);
+            border: 2px solid #FAF7EF;
+            cursor: pointer;
+            transition: transform 0.15s ease, background-color 0.15s ease;
+        }
+        .time-slider-input::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: #D97706;
+        }
+
+        /* Interactive 2D Seat/Chair Card styling */
+        .seat-stat-card {
+            width: 42px;
+            height: 52px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+        .seat-stat-card.occupied {
+            background: linear-gradient(135deg, rgba(201, 164, 76, 0.25), rgba(217, 119, 6, 0.35));
+            border: 1px solid #C9A44C;
+            color: #FAF7EF;
+            box-shadow: 0 0 12px rgba(201, 164, 76, 0.3);
+        }
+        .seat-stat-card.occupied:hover {
+            transform: translateY(-4px) scale(1.1);
+            box-shadow: 0 0 20px rgba(201, 164, 76, 0.6);
+        }
+        .seat-stat-card.available {
+            background: rgba(28, 27, 24, 0.8);
+            border: 1px dashed rgba(158, 148, 132, 0.5);
+            color: #9E9484;
+        }
+        .seat-stat-card.available:hover {
+            border-color: #10B981;
+            color: #10B981;
+            transform: translateY(-4px) scale(1.1);
+        }
+
+        /* Interactive Slot Card Hover Tilt */
+        .slot-card-interactive {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .slot-card-interactive:hover {
+            border-color: #C9A44C !important;
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(201, 164, 76, 0.25);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased relative selection:bg-brand-gold selection:text-black pb-20 md:pb-0">
+
+    <!-- 3D PALACE CANVAS -->
+    <canvas id="libraryCanvas"></canvas>
+    <div id="cursor-glow" class="fixed inset-0 z-30 cursor-glow transition-opacity duration-300 hidden md:block"></div>
+
+    <!-- SYSTEMATIC TOP NAVIGATION HEADER -->
+    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-xl bg-brand-bg/90 border-b border-brand-border/80 shadow-2xl" id="main-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Brand Identity -->
+            <a href="#" class="flex items-center gap-3.5 group shrink-0">
+                <div class="desk-3d-badge desk-3d-logo-nav shadow-lg group-hover:border-brand-gold transition-all duration-300"></div>
+                <div class="flex flex-col">
+                    <div class="flex items-center gap-2">
+                        <span class="font-serif text-xl sm:text-2xl font-bold text-white tracking-wider group-hover:text-brand-gold transition-colors leading-none">SHAKTI</span>
+                        <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-brand-gold/15 text-brand-gold border border-brand-gold/30">Rampur</span>
+                    </div>
+                    <span class="text-[9px] uppercase tracking-[0.25em] text-brand-muted block mt-1">Knowledge Palace</span>
+                </div>
+            </a>
+
+            <!-- Systematic Center Navigation -->
+            <nav class="hidden lg:flex items-center gap-1 xl:gap-2 px-3 py-1.5 rounded-full bg-brand-surface/80 border border-brand-border/60 text-xs font-semibold uppercase tracking-wider text-brand-text/80">
+                <a href="#about" class="px-3 py-1.5 rounded-full hover:text-brand-gold hover:bg-brand-card transition-all">About</a>
+                <a href="#shifts" class="px-3 py-1.5 rounded-full hover:text-brand-gold hover:bg-brand-card transition-all">Shifts</a>
+                <a href="#differences" class="px-3 py-1.5 rounded-full hover:text-brand-gold hover:bg-brand-card transition-all">Differences</a>
+                <a href="#builder" class="px-3 py-1.5 rounded-full hover:text-brand-gold hover:bg-brand-card transition-all">Membership</a>
+                <a href="#facilities" class="px-3 py-1.5 rounded-full hover:text-brand-gold hover:bg-brand-card transition-all">Facilities</a>
+                <a href="#pricing" class="px-3 py-1.5 rounded-full hover:text-brand-gold hover:bg-brand-card transition-all">Pricing</a>
+                <a href="#exams" class="px-3 py-1.5 rounded-full hover:text-brand-gold hover:bg-brand-card transition-all">Exams</a>
+                <a href="#faq" class="px-3 py-1.5 rounded-full hover:text-brand-gold hover:bg-brand-card transition-all">FAQ</a>
+            </nav>
+
+            <!-- Right CTA & Contact Info -->
+            <div class="hidden lg:flex items-center gap-4 shrink-0">
+                <a href="tel:6397807935" class="flex items-center gap-1.5 text-xs text-brand-muted hover:text-brand-gold transition-colors">
+                    <i data-lucide="phone" class="w-3.5 h-3.5 text-brand-gold"></i>
+                    <span class="font-mono font-semibold">6397807935</span>
+                </a>
+                <a href="#builder" class="px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-brand-gold to-brand-saffron text-black hover:opacity-95 transition-all shadow-md shadow-brand-gold/10 active:scale-95">
+                    Reserve Space
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="menu-btn" aria-label="Toggle Menu" class="lg:hidden p-2.5 text-brand-text focus:outline-none rounded-xl border border-brand-border bg-brand-surface active:scale-95 transition-transform">
+                <i data-lucide="menu" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden lg:hidden palace-panel border-b border-brand-border px-6 py-6 flex flex-col gap-4">
+            <div class="flex items-center gap-3 mb-2 pb-3 border-b border-brand-border">
+                <div class="desk-3d-badge desk-3d-logo-mobile"></div>
+                <div>
+                    <span class="font-serif font-bold text-white text-lg block leading-none">SHAKTI LIBRARY</span>
+                    <span class="text-[10px] text-brand-gold">Shaukat Ali Road, Civil Lines, Rampur</span>
+                </div>
+            </div>
+            <a href="#about" class="mobile-link text-sm text-brand-text">About Shakti Library</a>
+            <a href="#shifts" class="mobile-link text-sm text-brand-text">Scrollable Shift Preview</a>
+            <a href="#differences" class="mobile-link text-sm text-brand-text">Reserved vs. Unreserved</a>
+            <a href="#builder" class="mobile-link text-sm text-brand-gold font-semibold">Reserve Membership</a>
+            <a href="#facilities" class="mobile-link text-sm text-brand-text">Facilities & Amenities</a>
+            <a href="#pricing" class="mobile-link text-sm text-brand-text">Pricing Plans</a>
+            <a href="#exams" class="mobile-link text-sm text-brand-text">Knowledge Network</a>
+            <a href="#faq" class="mobile-link text-sm text-brand-text">FAQ</a>
+            <a href="#contact" class="mobile-link text-sm text-brand-text">Location & Contact</a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden">
+        <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center mt-6">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full palace-panel border border-brand-gold/40 text-xs text-brand-gold mb-6 uppercase tracking-widest">
+                <span class="w-2 h-2 rounded-full bg-brand-saffron animate-pulse"></span>
+                <span>SHAKTI LIBRARY • RAMPUR</span>
+            </div>
+
+            <p class="font-serif italic text-lg sm:text-2xl text-brand-gold mb-2">A Place Where Ambition Finds Silence.</p>
+
+            <h1 class="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-tight gold-gradient-text">
+                SHAKTI LIBRARY
+            </h1>
+
+            <p class="text-sm sm:text-lg text-brand-text/90 max-w-3xl mx-auto font-light mb-8 leading-relaxed">
+                A premium self-study environment designed for students preparing for India's most demanding examinations. Featuring Single 2 kW AC climate control, ergonomic seating, fiber internet, and flexible shifts.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12 w-full max-w-md sm:max-w-none mx-auto">
+                <a href="#builder" class="w-full sm:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-brand-gold to-brand-saffron text-black font-bold text-xs sm:text-sm uppercase tracking-wider hover:opacity-95 transition-opacity shadow-lg shadow-brand-gold/20 active:scale-95">
+                    Reserve Your Study Space
+                </a>
+                <a href="#shifts" class="w-full sm:w-auto px-8 py-4 rounded-full palace-panel text-brand-text hover:text-brand-gold text-xs sm:text-sm uppercase tracking-wider transition-colors border border-brand-gold/30 hover:border-brand-gold active:scale-95">
+                    Explore Time Preview
+                </a>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 max-w-3xl mx-auto">
+                <div class="p-3 rounded-xl palace-panel border border-brand-border text-center">
+                    <span class="block text-lg font-bold text-brand-gold">48 Desks</span>
+                    <span class="text-[10px] uppercase tracking-wider text-brand-muted">Reserved Capacity</span>
+                </div>
+                <div class="p-3 rounded-xl palace-panel border border-brand-border text-center">
+                    <span class="block text-lg font-bold text-brand-gold">Single 2 kW AC</span>
+                    <span class="text-[10px] uppercase tracking-wider text-brand-muted">Cooling Unit</span>
+                </div>
+                <div class="p-3 rounded-xl palace-panel border border-brand-border text-center">
+                    <span class="block text-lg font-bold text-brand-gold">200 Mbps</span>
+                    <span class="text-[10px] uppercase tracking-wider text-brand-muted">Fiber Wi-Fi</span>
+                </div>
+                <div class="p-3 rounded-xl palace-panel border border-brand-border text-center">
+                    <span class="block text-lg font-bold text-brand-gold">24/7 CCTV</span>
+                    <span class="text-[10px] uppercase tracking-wider text-brand-muted">Monitored</span>
+                </div>
+                <div class="p-3 rounded-xl palace-panel border border-brand-border text-center col-span-2 sm:col-span-1">
+                    <span class="block text-lg font-bold text-brand-gold">6/12/18 Hr</span>
+                    <span class="text-[10px] uppercase tracking-wider text-brand-muted">Shift Options</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="py-24 relative z-10 border-t border-brand-border bg-brand-surface">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-widest text-brand-saffron block mb-2">Architectural Philosophy</span>
+                    <h2 class="font-serif text-3xl sm:text-5xl font-bold mb-6 text-brand-white leading-tight">
+                        Built for Focus.<br/>Designed for Ambition.
+                    </h2>
+                    <p class="text-brand-text/80 mb-4 leading-relaxed text-xs sm:text-base">
+                        Shakti Library in Rampur is crafted specifically to eliminate daily study friction. Designed for students preparing for civil services, state PCS, banking, SSC, UGC NET, NEET, JEE, and national entrance examinations.
+                    </p>
+                    <p class="text-brand-text/80 mb-6 leading-relaxed text-xs sm:text-base">
+                        We provide quiet study zones, a dedicated Single 2 kW AC system, personal desk power sockets, high-speed fiber internet, and continuous CCTV security to support long, disciplined preparation hours.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-4 pt-4 border-t border-brand-border">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-brand-gold/10 flex items-center justify-center text-brand-gold shrink-0">
+                                <i data-lucide="shield-check" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-xs sm:text-sm text-white">Quiet Policy</h4>
+                                <p class="text-[10px] sm:text-xs text-brand-muted">Strict silent study code</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-brand-gold/10 flex items-center justify-center text-brand-gold shrink-0">
+                                <i data-lucide="zap" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-xs sm:text-sm text-white">Power Backup</h4>
+                                <p class="text-[10px] sm:text-xs text-brand-muted">Uninterrupted electricity</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="palace-panel p-6 sm:p-8 rounded-2xl relative border-brand-gold/30 flex flex-col justify-between min-h-[380px]">
+                    <div class="flex items-center gap-4 mb-4 pb-4 border-b border-brand-border">
+                        <div class="desk-3d-badge desk-3d-logo-about shrink-0 shadow-lg"></div>
+                        <div>
+                            <h3 class="font-serif text-xl font-bold text-white">Shakti Library Premises</h3>
+                            <p class="text-xs text-brand-muted" id="about-address-text">Shaukat Ali Road, Civil Lines, Rampur, UP</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3 text-xs sm:text-sm text-brand-text/90 bg-brand-card p-5 rounded-xl border border-brand-border">
+                        <div class="flex items-center justify-between py-1 border-b border-brand-border/50">
+                            <span class="text-brand-gold font-bold">QUIET STUDY</span>
+                            <span class="text-brand-muted">Acoustically Damped Zone</span>
+                        </div>
+                        <div class="flex items-center justify-between py-1 border-b border-brand-border/50">
+                            <span class="text-brand-gold font-bold">CLIMATE CONTROL</span>
+                            <span class="text-brand-muted">Single 2 kW AC Cooling</span>
+                        </div>
+                        <div class="flex items-center justify-between py-1">
+                            <span class="text-brand-gold font-bold">SECURITY</span>
+                            <span class="text-brand-muted">24/7 CCTV & Access Control</span>
+                        </div>
+                    </div>
+
+                    <p class="text-[11px] text-brand-muted italic mt-4">"A serious, prestigious place where ambitious students come to build their future."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SHIFT EXPLAINER & WORKABLE SCROLLABLE TIME PREVIEW SECTION -->
+    <section id="shifts" class="py-24 relative z-10 bg-brand-bg border-t border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-semibold uppercase tracking-widest text-brand-saffron block mb-2">Interactive Shift Explorer</span>
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white mb-3">Scrollable Shift Preview</h2>
+                <p class="text-xs sm:text-sm text-brand-muted">Scrub or drag the timeline slider below to dynamically rotate through shift slots, update timing readouts, and preview your study schedule.</p>
+            </div>
+
+            <!-- Duration Selection Tabs -->
+            <div class="flex justify-center gap-3 mb-8">
+                <button onclick="setShiftTab(6)" id="tab-btn-6" class="px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all border border-brand-gold/40 bg-brand-gold text-black shadow-md shadow-brand-gold/10">
+                    6 Hours
+                </button>
+                <button onclick="setShiftTab(12)" id="tab-btn-12" class="px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all border border-brand-border bg-brand-surface text-brand-text hover:border-brand-gold">
+                    12 Hours
+                </button>
+                <button onclick="setShiftTab(18)" id="tab-btn-18" class="px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all border border-brand-border bg-brand-surface text-brand-text hover:border-brand-gold">
+                    18 Hours
+                </button>
+            </div>
+
+            <!-- 3D Clock Canvas & Interactive Time Slider -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-5xl mx-auto mb-10 items-center">
+                <div class="lg:col-span-5 palace-panel p-4 rounded-2xl border-brand-gold/40 h-64 relative overflow-hidden flex flex-col items-center justify-between">
+                    <div id="interactive-clock-3d-container" class="absolute inset-0 cursor-grab active:cursor-grabbing"></div>
+                    <div class="relative z-10 w-full flex justify-between items-center bg-brand-card/80 p-2.5 rounded-lg border border-brand-border">
+                        <span class="text-[11px] font-bold text-brand-gold uppercase">3D Synchronized Clock</span>
+                        <span class="text-[10px] text-brand-muted">Scrub Timeline Below</span>
+                    </div>
+                    <div class="relative z-10 text-[11px] text-brand-gold font-mono font-bold bg-black/80 px-3.5 py-1.5 rounded-full border border-brand-gold/40 shadow-lg">
+                        <span id="clock-3d-slot-display">Morning Slot (6 AM - 12 PM)</span>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 palace-panel p-6 rounded-2xl border-brand-border flex flex-col justify-center h-64">
+                    <label for="time-slider" class="block text-xs font-bold uppercase text-brand-gold mb-3 flex justify-between items-center">
+                        <span>Scroll / Scrub Active Time</span>
+                        <span id="slider-hour-readout" class="text-white font-mono text-sm bg-brand-card px-2.5 py-0.5 rounded border border-brand-border">06:00 AM</span>
+                    </label>
+                    
+                    <input type="range" id="time-slider" min="0" max="100" value="0" class="time-slider-input mb-6" oninput="handleTimeSliderInput(this.value)">
+
+                    <div class="flex justify-between text-xs text-brand-muted mb-2 font-mono">
+                        <span>6:00 AM</span>
+                        <span>12:00 PM</span>
+                        <span>6:00 PM</span>
+                        <span>12:00 AM</span>
+                    </div>
+                    <div class="h-4 bg-brand-card rounded-full relative overflow-hidden border border-brand-border mb-3">
+                        <div id="timeline-bar" class="absolute top-0 bottom-0 bg-gradient-to-r from-brand-gold to-brand-saffron rounded-full transition-all duration-300" style="left: 0%; width: 33.33%;"></div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs gap-2">
+                        <span class="text-brand-text/90 font-semibold" id="timeline-label">Active Shift Preview: Morning (6:00 AM – 12:00 PM)</span>
+                        <span class="text-brand-gold font-bold text-xs px-2.5 py-1 rounded bg-brand-gold/10 border border-brand-gold/30" id="timeline-duration">6 Hours</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shift Cards Container (Interactive Slots) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto" id="shift-cards-container"></div>
+        </div>
+    </section>
+
+    <!-- NEW DIFFERENCES SECTION: RESERVED SEAT vs UNRESERVED SEAT -->
+    <section id="differences" class="py-24 relative z-10 bg-brand-surface border-t border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-semibold uppercase tracking-widest text-brand-saffron block mb-2">Seating Plan Advantage</span>
+                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-white mb-4">Reserved vs. Unreserved Seats</h2>
+                <p class="text-xs sm:text-sm text-brand-muted leading-relaxed">Understanding the power of a dedicated personal workstation versus flexible seating.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <!-- Reserved Seat Benefit Card -->
+                <div class="palace-panel p-6 sm:p-8 rounded-2xl border-brand-gold/60 relative overflow-hidden flex flex-col justify-between shadow-2xl">
+                    <div class="absolute -top-3 right-6 px-4 py-1 bg-gradient-to-r from-brand-gold to-brand-saffron text-black text-[10px] font-extrabold uppercase tracking-widest rounded-full">
+                        Recommended
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-12 h-12 rounded-xl bg-brand-gold/15 border border-brand-gold/30 flex items-center justify-center text-brand-gold shrink-0">
+                                <i data-lucide="bookmark-check" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-serif text-2xl font-bold text-white">Reserved Seat Benefit</h3>
+                                <p class="text-xs text-brand-gold">Dedicated Personal Workspace</p>
+                            </div>
+                        </div>
+
+                        <ul class="space-y-4 text-xs sm:text-sm text-brand-text/90 mb-8">
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="book-marked" class="w-5 h-5 text-brand-gold shrink-0 mt-0.5"></i>
+                                <div>
+                                    <strong class="text-white block">Keep Books On Desk</strong>
+                                    <span class="text-brand-muted text-xs leading-relaxed">You can leave your books and notes permanently on your assigned desk (at your own security), saving daily packing hassle.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="lock" class="w-5 h-5 text-brand-gold shrink-0 mt-0.5"></i>
+                                <div>
+                                    <strong class="text-white block">Guaranteed Permanent Spot</strong>
+                                    <span class="text-brand-muted text-xs leading-relaxed">No daily seat hunting. Your desk is locked for your shift every single day.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="brain-circuit" class="w-5 h-5 text-brand-gold shrink-0 mt-0.5"></i>
+                                <div>
+                                    <strong class="text-white block">Higher Focus & Comfort</strong>
+                                    <span class="text-brand-muted text-xs leading-relaxed">Customize your study setup, lighting, and notebook placement for maximum productivity.</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <a href="#builder" class="w-full py-3.5 rounded-full bg-gradient-to-r from-brand-gold to-brand-saffron text-black text-center text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-opacity">
+                        Reserve Dedicated Seat
+                    </a>
+                </div>
+
+                <!-- Unreserved / General Seat Card -->
+                <div class="palace-card p-6 sm:p-8 rounded-2xl border-brand-border flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-12 h-12 rounded-xl bg-brand-card border border-brand-border flex items-center justify-center text-brand-muted shrink-0">
+                                <i data-lucide="users" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-serif text-2xl font-bold text-white">Unreserved Seating</h3>
+                                <p class="text-xs text-brand-muted">First-Come First-Serve Flexible Spots</p>
+                            </div>
+                        </div>
+
+                        <ul class="space-y-4 text-xs sm:text-sm text-brand-text/70 mb-8">
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="x-circle" class="w-5 h-5 text-brand-muted shrink-0 mt-0.5"></i>
+                                <div>
+                                    <strong class="text-brand-muted block">Desk Must Be Cleared Daily</strong>
+                                    <span class="text-brand-muted text-xs leading-relaxed">You must take all books, bags, and personal study material with you at the end of every study session.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="shuffle" class="w-5 h-5 text-brand-muted shrink-0 mt-0.5"></i>
+                                <div>
+                                    <strong class="text-brand-muted block">Variable Daily Seating</strong>
+                                    <span class="text-brand-muted text-xs leading-relaxed">Seats are assigned on arrival based on available vacancies for that specific shift.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="clock" class="w-5 h-5 text-brand-muted shrink-0 mt-0.5"></i>
+                                <div>
+                                    <strong class="text-brand-muted block">Setup Adjustment Needed</strong>
+                                    <span class="text-brand-muted text-xs leading-relaxed">Requires setting up your reading materials and power connections every time you enter.</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <a href="#builder" class="w-full py-3.5 rounded-full border border-brand-border text-brand-muted text-center text-xs font-bold uppercase tracking-wider hover:text-white hover:border-brand-gold transition-colors">
+                        Explore Flexible Options
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2D INTERACTIVE 90% STATISTIC & SEAT CARDS SECTION -->
+    <section class="py-24 relative z-10 bg-brand-bg border-t border-brand-border text-center">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
+            <span class="text-xs font-semibold uppercase tracking-widest text-brand-saffron block mb-3">Consistency & Routine</span>
+            
+            <!-- 2D Interactive 10 Seats Display (9 Occupied Gold, 1 Available) -->
+            <div class="p-6 rounded-2xl palace-panel border border-brand-gold/30 mb-8 max-w-2xl mx-auto">
+                <div class="text-xs font-bold uppercase tracking-wider text-brand-gold mb-4">
+                    Sample Desk Status (9 Out of 10 Reserved)
+                </div>
+                
+                <div class="flex justify-center items-center flex-wrap gap-3 sm:gap-4 mb-4" id="stat-2d-seats-container">
+                    <!-- 9 Occupied Seats -->
+                    <div onclick="handleStatSeatClick(1)" class="seat-stat-card occupied"><i data-lucide="armchair" class="w-4 h-4 mb-0.5"></i><span class="text-[9px]">01</span></div>
+                    <div onclick="handleStatSeatClick(2)" class="seat-stat-card occupied"><i data-lucide="armchair" class="w-4 h-4 mb-0.5"></i><span class="text-[9px]">02</span></div>
+                    <div onclick="handleStatSeatClick(3)" class="seat-stat-card occupied"><i data-lucide="armchair" class="w-4 h-4 mb-0.5"></i><span class="text-[9px]">03</span></div>
+                    <div onclick="handleStatSeatClick(4)" class="seat-stat-card occupied"><i data-lucide="armchair" class="w-4 h-4 mb-0.5"></i><span class="text-[9px]">04</span></div>
+                    <div onclick="handleStatSeatClick(5)" class="seat-stat-card occupied"><i data-lucide="armchair" class="w-4 h-4 mb-0.5"></i><span class="text-[9px]">05</span></div>
+                    <div onclick="handleStatSeatClick(6)" class="seat-stat-card occupied"><i data-lucide="armchair" class="w-4 h-4 mb-0.5"></i><span class="text-[9px]">06</span></div>
+                    <div onclick="handleStatSeatClick(7)" class="seat-stat-card occupied"><i data-lucide="armchair" class="w-4 h-4 mb-0.5"></i><span class="text-[9px]">07</span></div>
+                    <div onclick="handleStatSeatClick(8)" class="seat-stat-card occupied"><i data-lucide="armchair" class="w-4 h-4 mb-0.5"></i><span class="text-[9px]">08</span></div>
+                    <div onclick="handleStatSeatClick(9)" class="seat-stat-card occupied"><i data-lucide="armchair" class="w-4 h-4 mb-0.5"></i><span class="text-[9px]">09</span></div>
+                    <!-- 1 Available Seat -->
+                    <div onclick="handleStatSeatClick(10)" class="seat-stat-card available"><i data-lucide="plus" class="w-4 h-4 mb-0.5"></i><span class="text-[9px]">10</span></div>
+                </div>
+
+                <p id="stat-seat-feedback" class="text-xs text-brand-gold font-mono min-h-[20px]">Click any desk card above to inspect reservation status.</p>
+            </div>
+
+            <h2 class="font-serif text-6xl sm:text-8xl font-bold gold-gradient-text mb-2">90%</h2>
+            <p class="text-base sm:text-xl text-brand-text font-serif italic mb-6">of students choose the reserved-seat routine.</p>
+            <p class="text-xs sm:text-sm text-brand-muted max-w-xl mx-auto leading-relaxed">
+                A dedicated study workspace guarantees consistency, eliminates daily seat hunting, and builds a long-term preparation routine.
+            </p>
+        </div>
+    </section>
+
+    <!-- STREAMLINED WHY RESERVE SECTION (3 FOCUSED CARDS) -->
+    <section class="py-20 relative z-10 bg-brand-surface border-t border-brand-border">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-semibold uppercase tracking-widest text-brand-saffron block mb-2">Dedicated Preparation</span>
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white">Why Reserve Your Study Space?</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="palace-card p-6 sm:p-8 rounded-2xl">
+                    <i data-lucide="repeat" class="w-8 h-8 text-brand-gold mb-4"></i>
+                    <h4 class="font-bold text-white text-base mb-2">CONSISTENCY</h4>
+                    <p class="text-xs text-brand-muted leading-relaxed">Return to a familiar study environment daily and build a long-term preparation routine.</p>
+                </div>
+                <div class="palace-card p-6 sm:p-8 rounded-2xl">
+                    <i data-lucide="smile" class="w-8 h-8 text-brand-gold mb-4"></i>
+                    <h4 class="font-bold text-white text-base mb-2">CONVENIENCE</h4>
+                    <p class="text-xs text-brand-muted leading-relaxed">No need to search for a suitable seat every time. Your desk stays ready for your shift.</p>
+                </div>
+                <div class="palace-card p-6 sm:p-8 rounded-2xl">
+                    <i data-lucide="target" class="w-8 h-8 text-brand-gold mb-4"></i>
+                    <h4 class="font-bold text-xs sm:text-base text-white mb-2">SUSTAINED FOCUS</h4>
+                    <p class="text-xs text-brand-muted leading-relaxed">Eliminate study friction and focus completely on cracking your target competitive exam.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CLEAN FACILITIES SECTION -->
+    <section id="facilities" class="py-24 relative z-10 bg-brand-bg border-t border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-12">
+                <div class="lg:col-span-8">
+                    <span class="text-xs font-semibold uppercase tracking-widest text-brand-saffron block mb-2">Study Infrastructure</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white">Facilities & Amenities</h2>
+                    <p class="text-xs text-brand-muted mt-1">Designed for quiet, continuous, and comfortable study hours.</p>
+                </div>
+                <div class="lg:col-span-4">
+                    <input type="text" id="facility-search" oninput="filterFacilities()" placeholder="Search amenities..." class="w-full px-5 py-3 rounded-full bg-brand-card border border-brand-border text-xs text-brand-text focus:outline-none focus:border-brand-gold">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="facilities-grid"></div>
+        </div>
+    </section>
+
+    <!-- PRICING SECTION -->
+    <section id="pricing" class="py-24 relative z-10 bg-brand-surface border-t border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-semibold uppercase tracking-widest text-brand-saffron block mb-2">Fixed Monthly Rates & Savings</span>
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white mb-3">Simple Membership Pricing</h2>
+                <p class="text-xs sm:text-sm text-brand-muted">Enjoy flat discounts when enrolling for 2 or 3 months (Save up to ₹600).</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+                <!-- 6 Hours Plan -->
+                <div class="palace-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold text-brand-gold uppercase tracking-widest block mb-2">Part-Day Plan</span>
+                        <h3 class="font-serif text-2xl font-bold text-white mb-1">6 Hours</h3>
+                        <p class="text-xs text-brand-muted mb-6">Ideal for revision & focused study</p>
+                        <div class="text-3xl sm:text-4xl font-bold text-brand-gold mb-6">₹1,000 <span class="text-xs font-normal text-brand-muted">/ month</span></div>
+
+                        <ul class="space-y-3 text-xs text-brand-text/80 mb-8">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-gold"></i> Morning / Noon / Evening shift choices</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-gold"></i> Single 2 kW AC reading hall</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-gold"></i> High-speed fiber internet access</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-gold"></i> Individual desk power sockets</li>
+                        </ul>
+                    </div>
+                    <a href="#builder" onclick="builderSelectDuration(6)" class="w-full py-3 rounded-full border border-brand-border text-center text-xs font-bold uppercase tracking-wider text-brand-gold hover:bg-brand-gold/10 transition-colors block">
+                        Select 6 Hours
+                    </a>
+                </div>
+
+                <!-- 12 Hours Plan -->
+                <div class="palace-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold text-brand-gold uppercase tracking-widest block mb-2">Half-Day Plan</span>
+                        <h3 class="font-serif text-2xl font-bold text-white mb-1">12 Hours</h3>
+                        <p class="text-xs text-brand-muted mb-6">Designed for long competitive exam routines</p>
+                        <div class="text-3xl sm:text-4xl font-bold text-brand-gold mb-6">₹1,600 <span class="text-xs font-normal text-brand-muted">/ month</span></div>
+
+                        <ul class="space-y-3 text-xs text-brand-text/80 mb-8">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-gold"></i> Day or Extended shift options</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-gold"></i> Single 2 kW AC environment</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-gold"></i> Fiber Wi-Fi & power backup</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-gold"></i> Seating details provided after appointment</li>
+                        </ul>
+                    </div>
+                    <a href="#builder" onclick="builderSelectDuration(12)" class="w-full py-3 rounded-full border border-brand-border text-center text-xs font-bold uppercase tracking-wider text-brand-gold hover:bg-brand-gold/10 transition-colors block">
+                        Select 12 Hours
+                    </a>
+                </div>
+
+                <!-- 18 Hours Plan -->
+                <div class="palace-panel rounded-2xl p-6 sm:p-8 flex flex-col justify-between border-brand-gold relative shadow-xl shadow-brand-saffron/10">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-brand-gold to-brand-saffron text-black text-[10px] font-bold uppercase tracking-widest rounded-full">
+                        Recommended
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold text-brand-saffron uppercase tracking-widest block mb-2">Full-Day Plan</span>
+                        <h3 class="font-serif text-2xl font-bold gold-gradient-text mb-1">18 Hours</h3>
+                        <p class="text-xs text-brand-muted mb-6">For aspirants needing maximum daily access</p>
+                        <div class="text-3xl sm:text-4xl font-bold gold-gradient-text mb-6">₹1,800 <span class="text-xs font-normal text-brand-muted">/ month</span></div>
+
+                        <ul class="space-y-3 text-xs text-brand-text/90 mb-8">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-gold"></i> Full 6:00 AM – 12:00 AM daily access</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-gold"></i> Seating details provided after appointment</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-gold"></i> Single 2 kW AC & CCTV monitoring</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-gold"></i> High-speed Wi-Fi & personal power plug</li>
+                        </ul>
+                    </div>
+                    <a href="#builder" onclick="builderSelectDuration(18)" class="w-full py-3 rounded-full bg-gradient-to-r from-brand-gold to-brand-saffron text-black text-center text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-opacity block">
+                        Select 18 Hours
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STEP-BY-STEP MEMBERSHIP BUILDER (POSITIONED AFTER PRICING) -->
+    <section id="builder" class="py-24 relative z-10 bg-brand-bg border-t border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-semibold uppercase tracking-widest text-brand-saffron block mb-2">Appointment Request</span>
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white mb-3">Build Your Membership</h2>
+                <p class="text-xs sm:text-sm text-brand-muted">Customize your study plan step-by-step and send your appointment request.</p>
+            </div>
+
+            <!-- Progress Tracker Bar -->
+            <div class="flex justify-start sm:justify-center items-center gap-2 mb-8 overflow-x-auto pb-3 pt-1 scrollbar-none">
+                <div id="step-pill-1" class="step-pill active px-3 py-1.5 rounded-full text-[11px] font-semibold flex items-center gap-1 shrink-0">
+                    <span>1</span> <span>Shift</span>
+                </div>
+                <i data-lucide="chevron-right" class="w-3 h-3 text-brand-muted shrink-0"></i>
+                <div id="step-pill-2" class="step-pill px-3 py-1.5 rounded-full text-[11px] font-semibold text-brand-muted border border-brand-border flex items-center gap-1 shrink-0">
+                    <span>2</span> <span>Timing</span>
+                </div>
+                <i data-lucide="chevron-right" class="w-3 h-3 text-brand-muted shrink-0"></i>
+                <div id="step-pill-3" class="step-pill px-3 py-1.5 rounded-full text-[11px] font-semibold text-brand-muted border border-brand-border flex items-center gap-1 shrink-0">
+                    <span>3</span> <span>Confirmation</span>
+                </div>
+                <i data-lucide="chevron-right" class="w-3 h-3 text-brand-muted shrink-0"></i>
+                <div id="step-pill-4" class="step-pill px-3 py-1.5 rounded-full text-[11px] font-semibold text-brand-muted border border-brand-border flex items-center gap-1 shrink-0">
+                    <span>4</span> <span>Duration & Payment</span>
+                </div>
+                <i data-lucide="chevron-right" class="w-3 h-3 text-brand-muted shrink-0"></i>
+                <div id="step-pill-5" class="step-pill px-3 py-1.5 rounded-full text-[11px] font-semibold text-brand-muted border border-brand-border flex items-center gap-1 shrink-0">
+                    <span>5</span> <span>Summary</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div class="lg:col-span-7 palace-panel p-6 sm:p-8 rounded-2xl border-brand-border relative overflow-hidden">
+                    <div id="builder-step-1" class="builder-step-panel">
+                        <h3 class="text-lg font-bold text-white mb-2">Step 1: Choose Your Shift</h3>
+                        <p class="text-xs text-brand-muted mb-6">Select how many hours you plan to study daily.</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <button onclick="builderSelectDuration(6)" id="b-dur-6" class="p-4 rounded-xl border text-left transition-all border-brand-gold bg-brand-gold/10">
+                                <span class="block text-2xl font-bold text-brand-gold">6 Hours</span>
+                                <span class="text-xs text-brand-text/80 block mt-1">₹1,000 / month</span>
+                                <span class="text-[10px] text-brand-muted block mt-2">Part-day study</span>
+                            </button>
+                            <button onclick="builderSelectDuration(12)" id="b-dur-12" class="p-4 rounded-xl border text-left transition-all border-brand-border bg-brand-card hover:border-brand-gold">
+                                <span class="block text-2xl font-bold text-white">12 Hours</span>
+                                <span class="text-xs text-brand-text/80 block mt-1">₹1,600 / month</span>
+                                <span class="text-[10px] text-brand-muted block mt-2">Half-day intensive</span>
+                            </button>
+                            <button onclick="builderSelectDuration(18)" id="b-dur-18" class="p-4 rounded-xl border text-left transition-all border-brand-border bg-brand-card hover:border-brand-gold">
+                                <span class="block text-2xl font-bold text-white">18 Hours</span>
+                                <span class="text-xs text-brand-text/80 block mt-1">₹1,800 / month</span>
+                                <span class="text-[10px] text-brand-muted block mt-2">Full day access</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="builder-step-2" class="builder-step-panel hidden">
+                        <h3 class="text-lg font-bold text-white mb-2">Step 2: Choose Your Time Slot</h3>
+                        <p class="text-xs text-brand-muted mb-6">Select the timing that matches your study routine.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="builder-timing-options"></div>
+                    </div>
+
+                    <div id="builder-step-3" class="builder-step-panel hidden">
+                        <h3 class="text-lg font-bold text-white mb-2">Step 3: Appointment & Desk Allocation</h3>
+                        <p class="text-xs text-brand-muted mb-6">How seating allocation works at Shakti Library:</p>
+
+                        <div class="p-5 rounded-xl bg-brand-card border border-brand-border text-xs space-y-4 mb-6">
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="check-circle2" class="w-5 h-5 text-brand-gold shrink-0 mt-0.5"></i>
+                                <div>
+                                    <b class="text-white text-sm block mb-0.5">Personal Visit & Desk Allocation</b>
+                                    <span class="text-brand-text/80 leading-relaxed">Desk and seating details will be provided after your appointment.[cite: 1]</span>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="shield-check" class="w-5 h-5 text-brand-gold shrink-0 mt-0.5"></i>
+                                <div>
+                                    <b class="text-white text-sm block mb-0.5">Guaranteed Workspace</b>
+                                    <span class="text-brand-text/80 leading-relaxed">Once confirmed during your visit, your desk setup remains dedicated for your chosen shift.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-brand-bg border border-brand-border text-xs">
+                            <span class="text-brand-gold font-bold block mb-1">Your Selected Shift Overview:</span>
+                            <span id="step-3-shift-summary" class="text-white font-semibold">6 Hours — Morning Slot (6:00 AM – 12:00 PM)</span>
+                        </div>
+                    </div>
+
+                    <div id="builder-step-4" class="builder-step-panel hidden">
+                        <h3 class="text-lg font-bold text-white mb-2">Step 4: Duration & Preferred Payment Mode</h3>
+                        <p class="text-xs text-brand-muted mb-4">Select duration to apply flat discounts, then choose your preferred payment mode.</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                            <button onclick="builderSelectMonths(1)" id="b-month-1" class="p-3.5 rounded-xl border text-center transition-all border-brand-gold bg-brand-gold/10">
+                                <span class="block text-base font-bold text-brand-gold">1 Month</span>
+                                <span class="text-[11px] text-brand-muted block mt-1">Standard Rate</span>
+                            </button>
+                            <button onclick="builderSelectMonths(2)" id="b-month-2" class="p-3.5 rounded-xl border text-center transition-all border-brand-border bg-brand-card hover:border-brand-gold">
+                                <span class="block text-base font-bold text-white">2 Months</span>
+                                <span class="text-xs text-brand-emerald font-extrabold block mt-1">₹100 Off / Month</span>
+                                <span class="text-[10px] text-brand-muted block mt-0.5">Save ₹200 Total</span>
+                            </button>
+                            <button onclick="builderSelectMonths(3)" id="b-month-3" class="p-3.5 rounded-xl border text-center transition-all border-brand-border bg-brand-card hover:border-brand-gold">
+                                <span class="block text-base font-bold text-white">3 Months</span>
+                                <span class="text-xs text-brand-emerald font-extrabold block mt-1">₹200 Off / Month</span>
+                                <span class="text-[10px] text-brand-muted block mt-0.5">Save ₹600 Total</span>
+                            </button>
+                        </div>
+
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-brand-gold mb-3">Select Payment Method</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div onclick="selectPaymentMethod('upi')" id="pay-upi" class="palace-card p-4 rounded-xl cursor-pointer border-brand-gold bg-brand-gold/10 text-center">
+                                <i data-lucide="qr-code" class="w-6 h-6 text-brand-gold mx-auto mb-2"></i>
+                                <span class="text-xs font-bold block text-white">UPI / GPay / PhonePe</span>
+                                <span class="text-[10px] text-brand-muted block mt-1">Direct QR Payment</span>
+                            </div>
+                            <div onclick="selectPaymentMethod('netbanking')" id="pay-netbanking" class="palace-card p-4 rounded-xl cursor-pointer border-brand-border text-center">
+                                <i data-lucide="building" class="w-6 h-6 text-brand-gold mx-auto mb-2"></i>
+                                <span class="text-xs font-bold block text-white">Net Banking</span>
+                                <span class="text-[10px] text-brand-muted block mt-1">Bank Transfer</span>
+                            </div>
+                            <div onclick="selectPaymentMethod('counter')" id="pay-counter" class="palace-card p-4 rounded-xl cursor-pointer border-brand-border text-center">
+                                <i data-lucide="wallet" class="w-6 h-6 text-brand-gold mx-auto mb-2"></i>
+                                <span class="text-xs font-bold block text-white">Pay at Counter</span>
+                                <span class="text-[10px] text-brand-muted block mt-1">During Visit</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="builder-step-5" class="builder-step-panel hidden">
+                        <h3 class="text-lg font-bold text-white mb-2">Step 5: Review Selection</h3>
+                        <p class="text-xs text-brand-muted mb-6">Confirm your Shakti Library membership details below.</p>
+
+                        <div class="p-4 rounded-xl bg-brand-surface border border-brand-border text-xs space-y-3 mb-6">
+                            <div class="flex justify-between py-1 border-b border-brand-border/50"><span class="text-brand-muted">Shift Duration:</span><span class="font-bold text-white" id="sum-dur">6 Hours</span></div>
+                            <div class="flex justify-between py-1 border-b border-brand-border/50"><span class="text-brand-muted">Timing Slot:</span><span class="font-bold text-white" id="sum-slot">Morning (6:00 AM – 12:00 PM)</span></div>
+                            <div class="flex justify-between py-1 border-b border-brand-border/50"><span class="text-brand-muted">Desk Allocation:</span><span class="font-bold text-brand-gold">Provided after appointment</span></div>
+                            <div class="flex justify-between py-1 border-b border-brand-border/50"><span class="text-brand-muted">Enrollment Period:</span><span class="font-bold text-white" id="sum-months">3 Months</span></div>
+                            <div class="flex justify-between py-1"><span class="text-brand-muted">Payment Mode:</span><span class="font-bold text-brand-gold" id="sum-payment">UPI / GPay / PhonePe</span></div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-8 pt-4 border-t border-brand-border">
+                        <button id="builder-prev-btn" onclick="builderPrevStep()" class="px-5 py-2.5 rounded-full text-xs font-bold text-brand-muted hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed" disabled>
+                            ← Back
+                        </button>
+                        <button id="builder-next-btn" onclick="builderNextStep()" class="px-6 py-2.5 rounded-full text-xs font-bold bg-brand-gold text-black hover:bg-brand-saffron transition-all">
+                            Next Step →
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Live Summary Sidebar Card -->
+                <div class="lg:col-span-5 palace-panel p-6 sm:p-8 rounded-2xl border-brand-gold/30 sticky top-28">
+                    <div class="flex justify-between items-center mb-4 pb-3 border-b border-brand-border">
+                        <div>
+                            <span class="text-[10px] uppercase tracking-widest text-brand-gold font-semibold block mb-0.5">Live Pricing Breakdown</span>
+                            <h3 class="font-serif text-xl font-bold text-white">Shakti Membership</h3>
+                        </div>
+                        <div class="desk-3d-badge desk-3d-logo-summary shrink-0 shadow-lg"></div>
+                    </div>
+
+                    <div class="space-y-4 text-xs mb-8">
+                        <div class="flex justify-between items-center pb-2 border-b border-brand-border/50"><span class="text-brand-muted">Shift Category</span><span class="font-bold text-white" id="side-dur">6 Hours</span></div>
+                        <div class="flex justify-between items-center pb-2 border-b border-brand-border/50"><span class="text-brand-muted">Shift Name</span><span class="font-bold text-white" id="side-shift">Morning</span></div>
+                        <div class="flex justify-between items-center pb-2 border-b border-brand-border/50"><span class="text-brand-muted">Timing Slot</span><span class="font-bold text-white" id="side-time">6:00 AM – 12:00 PM</span></div>
+                        <div class="flex justify-between items-center pb-2 border-b border-brand-border/50"><span class="text-brand-muted">Desk Details</span><span class="font-bold text-brand-gold">Provided after appointment</span></div>
+                        <div class="flex justify-between items-center pb-2 border-b border-brand-border/50"><span class="text-brand-muted">Duration</span><span class="font-bold text-white" id="side-months">1 Month</span></div>
+                        <div class="flex justify-between items-center pb-2 border-b border-brand-border/50"><span class="text-brand-muted">Payment Mode</span><span class="font-bold text-brand-gold" id="side-payment">UPI / GPay / PhonePe</span></div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-brand-surface border border-brand-border mb-6 space-y-2">
+                        <div class="flex justify-between items-center text-xs text-brand-muted">
+                            <span>Effective Monthly Rate:</span>
+                            <span id="side-monthly-rate" class="font-bold text-white">₹1,000 / mo</span>
+                        </div>
+                        <div class="flex justify-between items-baseline pt-2 border-t border-brand-border/50">
+                            <span class="text-xs text-brand-muted">Overall Total Price:</span>
+                            <span class="text-3xl font-bold gold-gradient-text" id="side-price">₹1,000</span>
+                        </div>
+                        <div id="side-savings" class="hidden text-xs font-extrabold text-brand-emerald bg-brand-emerald/10 p-2.5 rounded text-center border border-brand-emerald/30 mt-2">
+                            FLAT DISCOUNT APPLIED
+                        </div>
+                    </div>
+
+                    <button onclick="openReservationModal()" class="w-full py-4 rounded-full bg-gradient-to-r from-brand-gold to-brand-saffron text-black font-bold text-xs uppercase tracking-wider hover:opacity-95 transition-opacity shadow-lg shadow-brand-gold/20 flex items-center justify-center gap-2">
+                        <i data-lucide="bookmark" class="w-4 h-4"></i> Send Reservation Request
+                    </button>
+                    <p class="text-[10px] text-center text-brand-muted mt-3">Your request will be sent to Shakti Library Rampur for confirmation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KNOWLEDGE NETWORK / COMPETITIVE EXAM HUB SECTION (POSITIONED AFTER BUILDER) -->
+    <section id="exams" class="py-24 relative z-10 bg-brand-surface border-t border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-semibold uppercase tracking-widest text-brand-saffron block mb-2">Knowledge Network</span>
+                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-white mb-4">One Library. Many Dreams.</h2>
+                <p class="text-sm text-brand-muted leading-relaxed">From civil services to medicine, engineering, banking, and defence, Shakti Library brings together students preparing for India's diverse competitive examinations under one roof.</p>
+            </div>
+
+            <!-- Exam Category Filter Pills -->
+            <div class="flex justify-start sm:justify-center items-center gap-2 mb-10 overflow-x-auto pb-3 pt-1 scrollbar-none" id="exam-filter-pills">
+                <button onclick="filterExams('all')" class="exam-filter-btn active px-4 py-2 rounded-full text-xs font-bold uppercase border border-brand-gold bg-brand-gold text-black shrink-0">All Exams</button>
+                <button onclick="filterExams('civil')" class="exam-filter-btn px-4 py-2 rounded-full text-xs font-bold uppercase border border-brand-border bg-brand-card text-brand-text hover:border-brand-gold shrink-0">Civil Services & State PCS</button>
+                <button onclick="filterExams('ssc')" class="exam-filter-btn px-4 py-2 rounded-full text-xs font-bold uppercase border border-brand-border bg-brand-card text-brand-text hover:border-brand-gold shrink-0">SSC & Railways</button>
+                <button onclick="filterExams('banking')" class="exam-filter-btn px-4 py-2 rounded-full text-xs font-bold uppercase border border-brand-border bg-brand-card text-brand-text hover:border-brand-gold shrink-0">Banking & Financial</button>
+                <button onclick="filterExams('entrance')" class="exam-filter-btn px-4 py-2 rounded-full text-xs font-bold uppercase border border-brand-border bg-brand-card text-brand-text hover:border-brand-gold shrink-0">NEET, JEE & GATE</button>
+                <button onclick="filterExams('national')" class="exam-filter-btn px-4 py-2 rounded-full text-xs font-bold uppercase border border-brand-border bg-brand-card text-brand-text hover:border-brand-gold shrink-0">UGC NET, Teaching & Legal</button>
+            </div>
+
+            <!-- Exam Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="exam-cards-grid"></div>
+        </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section id="faq" class="py-24 relative z-10 bg-brand-bg border-t border-brand-border">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
+            <div class="text-center mb-12">
+                <span class="text-xs font-semibold uppercase tracking-widest text-brand-saffron block mb-2">Helpful Information</span>
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white">Frequently Asked Questions</h2>
+            </div>
+
+            <div class="space-y-4" id="faq-accordion"></div>
+        </div>
+    </section>
+
+    <!-- LOCATION & CONTACT SECTION WITH 3D ANIMATED MAP PIN MODEL -->
+    <section id="contact" class="py-24 relative z-10 bg-brand-surface border-t border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-widest text-brand-saffron block mb-2">Visit Us In Rampur</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white mb-6">Location & Contact Details</h2>
+
+                    <div class="space-y-6 text-xs sm:text-sm mb-8">
+                        <div class="flex items-start gap-4">
+                            <div class="p-3 rounded-xl palace-panel text-brand-gold shrink-0">
+                                <i data-lucide="clock" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white mb-1">Library Timings</h4>
+                                <p class="text-brand-text/70" id="info-hours">Daily: 06:00 AM – 12:00 AM</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="p-3 rounded-xl palace-panel text-brand-gold shrink-0">
+                                <i data-lucide="map-pin" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white mb-1">Address</h4>
+                                <p class="text-brand-text/70 leading-relaxed" id="info-address">Shaukat Ali Road, Civil Lines, रामपुर, Uttar Pradesh 244901</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="p-3 rounded-xl palace-panel text-brand-gold shrink-0">
+                                <i data-lucide="phone" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white mb-1">Contact Phone</h4>
+                                <p class="text-brand-text/70" id="info-phone">6397807935</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4">
+                        <a href="https://maps.google.com" target="_blank" rel="noopener" class="px-6 py-3 rounded-full bg-brand-gold/10 border border-brand-gold/30 hover:border-brand-gold text-brand-gold text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 transition-colors">
+                            <i data-lucide="navigation" class="w-4 h-4"></i> Get Directions
+                        </a>
+                        <a href="#" id="whatsapp-direct-btn" target="_blank" rel="noopener" class="px-6 py-3 rounded-full bg-emerald-600/20 border border-emerald-500/40 hover:border-emerald-500 text-emerald-400 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 transition-colors">
+                            <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp
+                        </a>
+                        <a href="tel:6397807935" class="px-6 py-3 rounded-full bg-brand-card border border-brand-border hover:border-brand-gold text-white text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 transition-colors">
+                            <i data-lucide="phone-call" class="w-4 h-4"></i> Call 6397807935
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 3D Google Maps Location Node Container -->
+                <div class="palace-panel p-2 rounded-2xl border-brand-gold/20 min-h-[340px] relative overflow-hidden flex flex-col items-center justify-between text-center p-6">
+                    <div id="contact-3d-pin-container" class="absolute inset-0 z-0"></div>
+                    
+                    <div class="relative z-10 w-full flex justify-between items-center bg-black/50 p-3 rounded-xl border border-brand-gold/10">
+                        <span class="text-xs font-bold text-brand-gold uppercase">3D Google Maps Pin</span>
+                        <span class="text-[10px] text-brand-muted font-mono">Civil Lines, Rampur</span>
+                    </div>
+
+                    <div class="relative z-10 my-auto bg-black/60 p-5 rounded-xl border border-brand-gold/20 backdrop-blur-md">
+                        <h4 class="font-bold text-white text-base mb-1">Shakti Library Rampur</h4>
+                        <p class="text-xs text-brand-muted max-w-xs mb-3">Shaukat Ali Road, Civil Lines area, रामपुर, UP.</p>
+                        <a href="https://maps.google.com" target="_blank" class="text-xs text-brand-gold underline font-bold inline-flex items-center gap-1">
+                            <span>Open Google Maps</span> <i data-lucide="external-link" class="w-3 h-3"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-12 border-t border-brand-border bg-brand-bg text-xs text-brand-muted">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+            <div class="flex items-center gap-3">
+                <div class="desk-3d-badge desk-3d-logo-footer shrink-0"></div>
+                <div>
+                    <span class="font-serif font-bold text-white text-base block">SHAKTI LIBRARY</span>
+                    <span class="text-[10px] text-brand-gold">A quiet place for ambitious minds.</span>
+                </div>
+            </div>
+            <p>© <span id="year-copy">2026</span> Shakti Library. All rights reserved. Helpline: 6397807935</p>
+            <div class="flex items-center gap-4">
+                <a href="#about" class="hover:text-brand-gold transition-colors">About</a>
+                <a href="#shifts" class="hover:text-brand-gold transition-colors">Shifts</a>
+                <a href="#pricing" class="hover:text-brand-gold transition-colors">Pricing</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- FIXED MOBILE BOTTOM CTA -->
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 p-3 bg-brand-surface/95 border-t border-brand-border backdrop-blur-md">
+        <a href="#builder" class="block w-full py-3 rounded-full bg-gradient-to-r from-brand-gold to-brand-saffron text-black font-bold text-xs text-center uppercase tracking-wider shadow-lg active:scale-95">
+            Book Your Study Session
+        </a>
+    </div>
+
+    <!-- RESERVATION MODAL -->
+    <div id="reservation-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300 overflow-y-auto">
+        <div class="palace-panel p-6 sm:p-8 rounded-2xl max-w-lg w-full border-brand-gold relative my-auto">
+            <button onclick="closeReservationModal()" class="absolute top-4 right-4 text-brand-muted hover:text-white p-1">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="flex items-center gap-3 mb-4">
+                <div class="desk-3d-badge desk-3d-logo-modal shrink-0"></div>
+                <div>
+                    <h3 class="font-serif text-xl sm:text-2xl font-bold text-white">Book Your Study Session</h3>
+                    <p class="text-[11px] sm:text-xs text-brand-muted">Review your appointment request details:</p>
+                </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-brand-surface border border-brand-border text-xs space-y-2.5 mb-5">
+                <div class="flex justify-between"><span class="text-brand-muted">Shift Category:</span><span class="font-bold text-white" id="modal-dur">6 Hours</span></div>
+                <div class="flex justify-between"><span class="text-brand-muted">Shift Timing:</span><span class="font-bold text-white" id="modal-slot">Morning (6:00 AM – 12:00 PM)</span></div>
+                <div class="flex justify-between"><span class="text-brand-muted">Desk Allocation:</span><span class="font-bold text-brand-gold">Provided after appointment</span></div>
+                <div class="flex justify-between"><span class="text-brand-muted">Period:</span><span class="font-bold text-white" id="modal-months">3 Months</span></div>
+                <div class="flex justify-between"><span class="text-brand-muted">Payment Mode:</span><span class="font-bold text-brand-gold" id="modal-payment">UPI / GPay / PhonePe</span></div>
+                <div class="flex justify-between pt-2 border-t border-brand-border"><span class="text-brand-muted">Total Fee:</span><span class="font-bold text-brand-gold text-base" id="modal-price">₹2,700</span></div>
+            </div>
+
+            <form id="reservation-form" onsubmit="submitReservationForm(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-brand-text mb-1">Full Name</label>
+                    <input type="text" id="res-name" required placeholder="Enter your full name" class="w-full px-4 py-2.5 rounded-xl bg-brand-surface border border-brand-border text-xs text-white focus:outline-none focus:border-brand-gold">
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-brand-text mb-1">Mobile / WhatsApp Number</label>
+                    <input type="tel" id="res-phone" required placeholder="Enter mobile number" class="w-full px-4 py-2.5 rounded-xl bg-brand-surface border border-brand-border text-xs text-white focus:outline-none focus:border-brand-gold">
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-brand-text mb-1">Target Exam / Notes</label>
+                    <textarea id="res-msg" rows="2" placeholder="Mention exam preparation (e.g. UPSC, SSC, Banking, NEET)..." class="w-full px-4 py-2.5 rounded-xl bg-brand-surface border border-brand-border text-xs text-white focus:outline-none focus:border-brand-gold"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 rounded-full bg-gradient-to-r from-brand-gold to-brand-saffron text-black font-bold text-xs uppercase tracking-wider hover:opacity-95 transition-opacity active:scale-95">
+                    Confirm Appointment Request
+                </button>
+            </form>
+
+            <div id="modal-success" class="hidden text-center py-4">
+                <i data-lucide="check-circle" class="w-12 h-12 text-brand-emerald mx-auto mb-3"></i>
+                <h4 class="font-bold text-white text-base mb-1">Your appointment request has been received.</h4>
+                <p class="text-xs text-brand-muted mb-4">Your desk and seating details will be communicated after your appointment.</p>
+                <a id="whatsapp-send-link" href="#" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider active:scale-95">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i> Send via WhatsApp (6397807935)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic Scripts -->
+    <script>
+        /* CENTRAL CONFIGURATION OBJECT */
+        const SHAKTI_CONFIG = {
+            library: {
+                name: "Shakti Library",
+                location: "Civil Lines, रामपुर, Uttar Pradesh, India",
+                address: "Shaukat Ali Road, Civil Lines, Rampur, UP 244901",
+                hours: "Open Daily: 06:00 AM – 12:00 AM",
+                phone: "6397807935",
+                whatsapp: "916397807935",
+                totalCapacity: 48
+            },
+            prices: {
+                monthly: { 6: 1000, 12: 1600, 18: 1800 },
+                flatDiscounts: {
+                    1: 0,     // Standard Rate
+                    2: 100,   // ₹100 off per month[cite: 1]
+                    3: 200    // ₹200 off per month[cite: 1]
+                }
+            },
+            shifts: {
+                6: [
+                    { id: 'morn', name: 'Morning', time: '6:00 AM – 12:00 PM', left: '0%', width: '33.33%', desc: 'Ideal for early risers focusing on heavy theoretical subjects.' },
+                    { id: 'noon', name: 'Noon', time: '12:00 PM – 6:00 PM', left: '33.33%', width: '33.33%', desc: 'Designed for afternoon test-solving and university revision.' },
+                    { id: 'eve', name: 'Evening', time: '6:00 PM – 12:00 AM', left: '66.66%', width: '33.33%', desc: 'Quiet late hours suited for working professionals and researchers.' }
+                ],
+                12: [
+                    { id: 'day', name: 'Day Shift', time: '6:00 AM – 6:00 PM', left: '0%', width: '66.66%', desc: 'Full daylight access for intensive competitive exam routines.' },
+                    { id: 'ext', name: 'Extended', time: '12:00 PM – 12:00 AM', left: '33.33%', width: '66.66%', desc: 'Bridges afternoon study hours through to midnight.' }
+                ],
+                18: [
+                    { id: 'full', name: 'Full Day', time: '6:00 AM – 12:00 AM', left: '0%', width: '100%', desc: 'Unrestricted full operational access throughout the entire day.' }
+                ]
+            },
+            exams: [
+                { id: 1, category: 'civil', name: 'UPSC Civil Services', fullname: 'IAS, IPS, IFS, IRS Prelims & Mains', icon: 'award', tags: ['Polity', 'History', 'GS I-IV', 'CSAT'] },
+                { id: 2, category: 'civil', name: 'State PCS', fullname: 'UPPSC, BPSC, MPPSC, RPSC, HPSC, JPSC', icon: 'map', tags: ['State Special', 'GS Papers', 'Essay'] },
+                { id: 3, category: 'civil', name: 'UPSC CDS & NDA', fullname: 'Defence Officers Entrance Exams', icon: 'shield', tags: ['Maths', 'GAT', 'General Studies'] },
+                { id: 4, category: 'ssc', name: 'SSC CGL & CHSL', fullname: 'Staff Selection Commission Exams', icon: 'check-square', tags: ['Quant', 'Reasoning', 'English', 'GA'] },
+                { id: 5, category: 'ssc', name: 'SSC MTS & CPO', fullname: 'Multi-Tasking & Police Sub-Inspector', icon: 'layers', tags: ['Tier I & II', 'General Ability'] },
+                { id: 6, category: 'ssc', name: 'Railway / RRB', fullname: 'RRB NTPC, Group D & ALP Exams', icon: 'train', tags: ['General Science', 'Technical', 'Maths'] },
+                { id: 7, category: 'banking', name: 'IBPS & SBI PO', fullname: 'Probationary Officer Examinations', icon: 'briefcase', tags: ['Data Interpretation', 'Banking Awareness', 'Reasoning'] },
+                { id: 8, category: 'banking', name: 'IBPS & SBI Clerk', fullname: 'Clerical Cadre Competitive Exams', icon: 'credit-card', tags: ['Numerical Ability', 'English', 'Computer'] },
+                { id: 9, category: 'banking', name: 'RBI Grade B & SEBI', fullname: 'Regulatory Body Apex Officer Exams', icon: 'trending-up', tags: ['Finance', 'Economics', 'Management'] },
+                { id: 10, category: 'entrance', name: 'NEET UG', fullname: 'National Eligibility cum Entrance Test', icon: 'activity', tags: ['Biology', 'Physics', 'Chemistry'] },
+                { id: 11, category: 'entrance', name: 'JEE Main & Advanced', fullname: 'Engineering Entrance Examinations', icon: 'cpu', tags: ['Physics', 'Chemistry', 'Mathematics'] },
+                { id: 12, category: 'entrance', name: 'GATE & CAT', fullname: 'Engineering & Management Aptitude', icon: 'terminal', tags: ['Core Subjects', 'Quantitative Aptitude', 'VARC'] },
+                { id: 13, category: 'national', name: 'UGC NET & CSIR NET', fullname: 'Assistant Professor & JRF Eligibility', icon: 'book-open', tags: ['Teaching Aptitude', 'Subject Research'] },
+                { id: 14, category: 'national', name: 'Judiciary Exams', fullname: 'Civil Judge Junior Division Prelims & Mains', icon: 'scale', tags: ['Constitutional Law', 'IPC/CRPC', 'Local Acts'] },
+                { id: 15, category: 'national', name: 'CTET & State TET', fullname: 'Teacher Eligibility Tests', icon: 'user-check', tags: ['Child Pedagogy', 'Subject Knowledge'] }
+            ],
+            facilities: [
+                { title: 'Single 2 kW AC', desc: 'Dedicated 2 kW cooling unit for climate comfort.', icon: 'wind' },
+                { title: 'CCTV Security', desc: '24/7 HD video surveillance monitoring.', icon: 'shield-check' },
+                { title: 'Dedicated Desk', desc: 'Personal study space allocated after appointment.', icon: 'layout' },
+                { title: 'Power Socket', desc: 'Individual charging port at every desk.', icon: 'zap' },
+                { title: 'Fiber Wi-Fi', desc: 'High-speed dual-band internet for video lectures.', icon: 'wifi' },
+                { title: 'Ergonomic Chair', desc: 'High-back lumbar support seating.', icon: 'armchair' },
+                { title: 'Power Backup', desc: 'Automatic generator switchover.', icon: 'battery-charging' },
+                { title: 'Drinking Water', desc: 'Purified drinking water facility.', icon: 'droplets' }
+            ],
+            faqs: [
+                { q: 'What are the operational shift timings at Shakti Library?', a: 'Shakti Library offers 6-Hour (Morning/Noon/Evening), 12-Hour (Day/Extended), and 18-Hour (Full Day) shifts between 06:00 AM and 12:00 AM daily.' },
+                { q: 'How is seating allocated?', a: 'Desk and seating details will be provided after your appointment and visit to the library.' },
+                { q: 'What is the benefit of a Reserved Seat over Unreserved?', a: 'With a Reserved Seat, your workstation is exclusively assigned to you for your shift. You can keep your books and notes directly on your desk (at your own security) without taking them home every day.' },
+                { q: 'Where is Shakti Library located in Rampur?', a: 'Shakti Library is situated on Shaukat Ali Road in the Civil Lines area of Rampur, Uttar Pradesh.' },
+                { q: 'Are Wi-Fi, AC, and power backup included in all plans?', a: 'Yes, 200 Mbps fiber Wi-Fi, generator power backup, Single 2 kW AC cooling, and CCTV security are included with every membership tier.' },
+                { q: 'How do I contact Shakti Library?', a: 'You can call or WhatsApp us directly at 6397807935 or submit your appointment request form online.' }
+            ]
+        };
+
+        /* STATE MANAGEMENT */
+        let builderState = {
+            step: 1,
+            duration: 6,
+            shiftObj: SHAKTI_CONFIG.shifts[6][0],
+            months: 1,
+            paymentMode: 'UPI / GPay / PhonePe'
+        };
+
+        let clock3DGroup = null;
+        let hourPivotMesh = null;
+        let minutePivotMesh = null;
+
+        // Smooth Clock Motion Interpolation Targets
+        let targetHourRot = 0;
+        let targetMinuteRot = 0;
+        let currentHourRot = 0;
+        let currentMinuteRot = 0;
+
+        /* INITIALIZATION ON DOM LOAD */
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            
+            // Initialize 3D Architecture Engine & Interactive Clock
+            init3DLibraryScene();
+            initDesk3DLogos();
+            initAdvancedInteractiveClock3D();
+            init3DGoogleMapPin();
+            
+            renderShiftExplainer(6);
+            renderExams('all');
+            renderFacilities();
+            renderFaqs();
+            populateInfo();
+            updateBuilderUI();
+
+            // Mobile Navigation Toggle
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            document.querySelectorAll('.mobile-link').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+            });
+
+            // Cursor glow overlay
+            const cursorGlow = document.getElementById('cursor-glow');
+            window.addEventListener('pointermove', (e) => {
+                cursorGlow.style.setProperty('--x', `${e.clientX}px`);
+                cursorGlow.style.setProperty('--y', `${e.clientY}px`);
+            });
+
+            // ESC key modal listener
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeReservationModal();
+            });
+        });
+
+        function populateInfo() {
+            document.getElementById('info-hours').textContent = SHAKTI_CONFIG.library.hours;
+            document.getElementById('info-address').textContent = SHAKTI_CONFIG.library.address;
+            document.getElementById('about-address-text').textContent = SHAKTI_CONFIG.library.address;
+            document.getElementById('info-phone').textContent = SHAKTI_CONFIG.library.phone;
+            document.getElementById('whatsapp-direct-btn').href = `https://wa.me/${SHAKTI_CONFIG.library.whatsapp}`;
+        }
+
+        /* 2D INTERACTIVE STAT SEAT CLICK FEEDBACK */
+        function handleStatSeatClick(seatNum) {
+            const feedback = document.getElementById('stat-seat-feedback');
+            if (seatNum === 10) {
+                feedback.textContent = "Seat #10: Currently AVAILABLE for allocation.";
+                feedback.className = "text-xs text-brand-emerald font-mono font-bold min-h-[20px]";
+            } else {
+                feedback.textContent = `Seat #${seatNum < 10 ? '0' + seatNum : seatNum}: RESERVED (Occupied Routine Workspace - Books Kept On Desk).`;
+                feedback.className = "text-xs text-brand-gold font-mono font-bold min-h-[20px]";
+            }
+        }
+
+        /* PROCEDURAL 3D TABLE AND CHAIR BADGES */
+        function createDeskAndChairModel() {
+            const group = new THREE.Group();
+
+            const woodMat = new THREE.MeshStandardMaterial({ color: 0x4A2E1B, roughness: 0.4 });
+            const metalMat = new THREE.MeshStandardMaterial({ color: 0xC9A44C, roughness: 0.2, metalness: 0.8 });
+            const seatMat = new THREE.MeshStandardMaterial({ color: 0x1C1B18, roughness: 0.6 });
+
+            // Table Top
+            const topGeo = new THREE.BoxGeometry(1.6, 0.08, 0.9);
+            const tableTop = new THREE.Mesh(topGeo, woodMat);
+            tableTop.position.set(0, 0.5, 0);
+            group.add(tableTop);
+
+            // Legs
+            const legGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.9, 12);
+            const legPositions = [[-0.7, 0.05, -0.38], [0.7, 0.05, -0.38], [-0.7, 0.05, 0.38], [0.7, 0.05, 0.38]];
+            legPositions.forEach(pos => {
+                const leg = new THREE.Mesh(legGeo, metalMat);
+                leg.position.set(...pos);
+                group.add(leg);
+            });
+
+            // Chair
+            const seatGeo = new THREE.BoxGeometry(0.65, 0.06, 0.6);
+            const chairSeat = new THREE.Mesh(seatGeo, seatMat);
+            chairSeat.position.set(0, 0.15, -0.75);
+            group.add(chairSeat);
+
+            const backGeo = new THREE.BoxGeometry(0.65, 0.5, 0.05);
+            const chairBack = new THREE.Mesh(backGeo, seatMat);
+            chairBack.position.set(0, 0.42, -1.02);
+            chairBack.rotation.x = -0.08;
+            group.add(chairBack);
+
+            group.position.y = -0.15;
+            return group;
+        }
+
+        function createRenderer(container) {
+            try {
+                const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+                renderer.setSize(container.clientWidth, container.clientHeight);
+                container.appendChild(renderer.domElement);
+                return renderer;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function initDesk3DLogos() {
+            const targets = ['.desk-3d-logo-nav', '.desk-3d-logo-mobile', '.desk-3d-logo-about', '.desk-3d-logo-summary', '.desk-3d-logo-footer', '.desk-3d-logo-modal'];
+            targets.forEach(selector => {
+                const container = document.querySelector(selector);
+                if (!container) return;
+
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 100);
+                camera.position.set(1.8, 1.4, 2.8);
+                camera.lookAt(0, 0.1, -0.3);
+
+                const renderer = createRenderer(container);
+                if (!renderer) return;
+
+                scene.add(new THREE.DirectionalLight(0xffffff, 1.8).translateOnAxis(new THREE.Vector3(3, 4, 3), 1));
+                scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+
+                const model = createDeskAndChairModel();
+                scene.add(model);
+
+                function animate() {
+                    requestAnimationFrame(animate);
+                    model.rotation.y += 0.01;
+                    renderer.render(scene, camera);
+                }
+                animate();
+            });
+        }
+
+        /* 3D GOOGLE MAPS LOCATION PIN MODEL IN CONTACT SECTION */
+        function init3DGoogleMapPin() {
+            const container = document.getElementById('contact-3d-pin-container');
+            if (!container) return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.set(0, 0, 5.5);
+
+            const renderer = createRenderer(container);
+            if (!renderer) return;
+
+            scene.add(new THREE.AmbientLight(0xF3E8CF, 0.8));
+            const light = new THREE.PointLight(0xC9A44C, 3, 20);
+            light.position.set(2, 3, 4);
+            scene.add(light);
+
+            const pinGroup = new THREE.Group();
+            scene.add(pinGroup);
+
+            // Google Maps Red Pin Teardrop Shape
+            const pinHeadGeo = new THREE.SphereGeometry(0.85, 32, 32);
+            const redMat = new THREE.MeshStandardMaterial({ color: 0xEA4335, roughness: 0.2, metalness: 0.3 });
+            const head = new THREE.Mesh(pinHeadGeo, redMat);
+            head.position.y = 0.6;
+            pinGroup.add(head);
+
+            // Inner Cutout Sphere
+            const innerGeo = new THREE.SphereGeometry(0.35, 24, 24);
+            const whiteMat = new THREE.MeshStandardMaterial({ color: 0x141412 });
+            const innerSphere = new THREE.Mesh(innerGeo, whiteMat);
+            innerSphere.position.set(0, 0.6, 0.55);
+            pinGroup.add(innerSphere);
+
+            // Pin Tip Cone
+            const coneGeo = new THREE.ConeGeometry(0.8, 1.5, 32);
+            const cone = new THREE.Mesh(coneGeo, redMat);
+            cone.rotation.x = Math.PI;
+            cone.position.y = -0.15;
+            pinGroup.add(cone);
+
+            // Orbit Base Ring
+            const ringGeo = new THREE.RingGeometry(1.2, 1.35, 32);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0xC9A44C, side: THREE.DoubleSide, transparent: true, opacity: 0.6 });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = Math.PI / 2;
+            ring.position.y = -0.9;
+            pinGroup.add(ring);
+
+            const clock = new THREE.Clock();
+            function animate() {
+                requestAnimationFrame(animate);
+                const t = clock.getElapsedTime();
+                pinGroup.rotation.y = t * 0.8;
+                pinGroup.position.y = Math.sin(t * 1.5) * 0.15;
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+
+        /* GRAND MODERN INDIAN LIBRARY 3D ARCHITECTURE ENGINE */
+        function init3DLibraryScene() {
+            const canvas = document.getElementById('libraryCanvas');
+            if (!canvas) return;
+
+            const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x0B0B0A, 0.025);
+
+            const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 3, 20);
+
+            let renderer;
+            try {
+                renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            } catch (err) {
+                return;
+            }
+
+            // Lighting System
+            const warmLight = new THREE.PointLight(0xC9A44C, 2.5, 100);
+            warmLight.position.set(0, 10, 0);
+            scene.add(warmLight);
+
+            const ambientLight = new THREE.AmbientLight(0xF3E8CF, 0.4);
+            scene.add(ambientLight);
+
+            // Library Interior Group
+            const libraryGroup = new THREE.Group();
+            scene.add(libraryGroup);
+
+            const woodMat = new THREE.MeshStandardMaterial({ color: 0x2A1A0F, roughness: 0.5 });
+            const bookColors = [0x6F1D1B, 0xC9A44C, 0x38322B, 0xD97706, 0x1C1B18];
+
+            // Tall Bookshelves
+            for (let z = -40; z <= 20; z += 10) {
+                const shelfLeft = new THREE.Mesh(new THREE.BoxGeometry(1.5, 12, 8), woodMat);
+                shelfLeft.position.set(-9, 6, z);
+                libraryGroup.add(shelfLeft);
+
+                const shelfRight = new THREE.Mesh(new THREE.BoxGeometry(1.5, 12, 8), woodMat);
+                shelfRight.position.set(9, 6, z);
+                libraryGroup.add(shelfRight);
+
+                for (let level = 1; level <= 5; level++) {
+                    for (let b = -3; b <= 3; b += 0.4) {
+                        const bGeo = new THREE.BoxGeometry(0.3, 1.2, 0.8);
+                        const bMat = new THREE.MeshStandardMaterial({ color: bookColors[Math.floor(Math.random() * bookColors.length)] });
+                        
+                        const bookL = new THREE.Mesh(bGeo, bMat);
+                        bookL.position.set(-8.1, level * 2, z + b);
+                        libraryGroup.add(bookL);
+
+                        const bookR = new THREE.Mesh(bGeo, bMat);
+                        bookR.position.set(8.1, level * 2, z + b);
+                        libraryGroup.add(bookR);
+                    }
+                }
+            }
+
+            // Central Desks
+            for (let z = -30; z <= 10; z += 12) {
+                const desk = createDeskAndChairModel();
+                desk.position.set(0, 0, z);
+                desk.scale.set(1.8, 1.8, 1.8);
+                libraryGroup.add(desk);
+            }
+
+            // Dust Particles
+            const particleCount = window.innerWidth < 768 ? 60 : 150;
+            const particleGeo = new THREE.BufferGeometry();
+            const particlePos = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                particlePos[i] = (Math.random() - 0.5) * 20;
+                particlePos[i + 1] = Math.random() * 12;
+                particlePos[i + 2] = (Math.random() - 0.5) * 60;
+            }
+
+            particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
+            const particleMat = new THREE.PointsMaterial({ color: 0xC9A44C, size: 0.12, transparent: true, opacity: 0.6 });
+            const dustParticles = new THREE.Points(particleGeo, particleMat);
+            scene.add(dustParticles);
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            gsap.registerPlugin(ScrollTrigger);
+            gsap.to(camera.position, {
+                z: -25,
+                y: 2,
+                scrollTrigger: {
+                    trigger: "body",
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 1.2
+                }
+            });
+
+            const clock = new THREE.Clock();
+            function animate() {
+                requestAnimationFrame(animate);
+                const t = clock.getElapsedTime();
+                dustParticles.rotation.y = t * 0.02;
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+
+        /* SMOOTH & AESTHETIC 3D CLOCK PLAYER WITH EASES & GLASS EFFECT */
+        function initAdvancedInteractiveClock3D() {
+            const container = document.getElementById('interactive-clock-3d-container');
+            if (!container) return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.set(0, 0, 4.2);
+
+            const renderer = createRenderer(container);
+            if (!renderer) return;
+
+            scene.add(new THREE.AmbientLight(0xF3E8CF, 1.2));
+            const pointLight = new THREE.PointLight(0xC9A44C, 3.5, 20);
+            pointLight.position.set(2, 3, 3);
+            scene.add(pointLight);
+
+            const fillLight = new THREE.PointLight(0xD97706, 1.5, 20);
+            fillLight.position.set(-2, -2, 2);
+            scene.add(fillLight);
+
+            clock3DGroup = new THREE.Group();
+            scene.add(clock3DGroup);
+
+            // Metallic Satin Bezel
+            const outerRingGeo = new THREE.TorusGeometry(1.25, 0.05, 32, 100);
+            const innerRingGeo = new THREE.TorusGeometry(1.15, 0.02, 32, 100);
+            const goldMetalMat = new THREE.MeshStandardMaterial({ color: 0xC9A44C, metalness: 0.9, roughness: 0.1 });
+
+            clock3DGroup.add(new THREE.Mesh(outerRingGeo, goldMetalMat));
+            clock3DGroup.add(new THREE.Mesh(innerRingGeo, goldMetalMat));
+
+            // Velvet Dark Face
+            const faceGeo = new THREE.CircleGeometry(1.13, 64);
+            const faceMat = new THREE.MeshStandardMaterial({ color: 0x10100E, roughness: 0.3 });
+            const clockFace = new THREE.Mesh(faceGeo, faceMat);
+            clockFace.position.z = -0.02;
+            clock3DGroup.add(clockFace);
+
+            // Hour Markers
+            for (let i = 0; i < 12; i++) {
+                const angle = (i / 12) * Math.PI * 2;
+                const isMajor = i % 3 === 0;
+                const markGeo = new THREE.BoxGeometry(isMajor ? 0.045 : 0.025, isMajor ? 0.14 : 0.08, 0.03);
+                const markMat = new THREE.MeshStandardMaterial({ color: isMajor ? 0xD97706 : 0xC9A44C, metalness: 0.8 });
+                const marker = new THREE.Mesh(markGeo, markMat);
+                marker.position.set(Math.sin(angle) * 0.95, Math.cos(angle) * 0.95, 0.02);
+                marker.rotation.z = -angle;
+                clock3DGroup.add(marker);
+            }
+
+            // Tapered Elegant Hour Hand
+            const hourHandShape = new THREE.Shape();
+            hourHandShape.moveTo(-0.03, 0);
+            hourHandShape.lineTo(0.03, 0);
+            hourHandShape.lineTo(0.015, 0.55);
+            hourHandShape.lineTo(0, 0.62);
+            hourHandShape.lineTo(-0.015, 0.55);
+            hourHandShape.closePath();
+
+            const hourExtrudeSettings = { depth: 0.02, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: 0.005, bevelThickness: 0.005 };
+            const hourGeo = new THREE.ExtrudeGeometry(hourHandShape, hourExtrudeSettings);
+            const saffronMat = new THREE.MeshStandardMaterial({ color: 0xD97706, metalness: 0.7, roughness: 0.2 });
+            const hourHand = new THREE.Mesh(hourGeo, saffronMat);
+
+            hourPivotMesh = new THREE.Group();
+            hourPivotMesh.add(hourHand);
+            hourPivotMesh.position.z = 0.05;
+            clock3DGroup.add(hourPivotMesh);
+
+            // Sleek Tapered Minute Hand
+            const minuteHandShape = new THREE.Shape();
+            minuteHandShape.moveTo(-0.02, 0);
+            minuteHandShape.lineTo(0.02, 0);
+            minuteHandShape.lineTo(0.01, 0.8);
+            minuteHandShape.lineTo(0, 0.88);
+            minuteHandShape.lineTo(-0.01, 0.8);
+            minuteHandShape.closePath();
+
+            const minuteGeo = new THREE.ExtrudeGeometry(minuteHandShape, hourExtrudeSettings);
+            const minuteHand = new THREE.Mesh(minuteGeo, goldMetalMat);
+
+            minutePivotMesh = new THREE.Group();
+            minutePivotMesh.add(minuteHand);
+            minutePivotMesh.position.z = 0.08;
+            clock3DGroup.add(minutePivotMesh);
+
+            // Center Pin Cap
+            const capGeo = new THREE.CylinderGeometry(0.07, 0.07, 0.08, 32);
+            const cap = new THREE.Mesh(capGeo, goldMetalMat);
+            cap.rotation.x = Math.PI / 2;
+            cap.position.z = 0.11;
+            clock3DGroup.add(cap);
+
+            // Glass Cover Lens
+            const glassGeo = new THREE.CircleGeometry(1.14, 64);
+            const glassMat = new THREE.MeshPhysicalMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.12,
+                roughness: 0.05,
+                metalness: 0.1,
+                transmission: 0.9
+            });
+            const glassMesh = new THREE.Mesh(glassGeo, glassMat);
+            glassMesh.position.z = 0.13;
+            clock3DGroup.add(glassMesh);
+
+            // Drag Control & Smooth Linear Interpolation (Lerp) Loop
+            let isDragging = false;
+            let previousMouseX = 0;
+
+            container.addEventListener('pointerdown', (e) => {
+                isDragging = true;
+                previousMouseX = e.clientX;
+            });
+
+            window.addEventListener('pointermove', (e) => {
+                if (!isDragging) return;
+                const deltaX = e.clientX - previousMouseX;
+                previousMouseX = e.clientX;
+
+                clock3DGroup.rotation.y += deltaX * 0.008;
+                
+                targetHourRot -= deltaX * 0.015;
+                targetMinuteRot -= deltaX * 0.04;
+
+                const sliderVal = (Math.abs(targetHourRot) % (Math.PI * 2)) / (Math.PI * 2) * 100;
+                document.getElementById('time-slider').value = sliderVal;
+                handleTimeSliderInput(sliderVal);
+            });
+
+            window.addEventListener('pointerup', () => { isDragging = false; });
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Smooth Rotation Lerp for buttery clock hands
+                currentHourRot += (targetHourRot - currentHourRot) * 0.1;
+                currentMinuteRot += (targetMinuteRot - currentMinuteRot) * 0.1;
+
+                if (hourPivotMesh) hourPivotMesh.rotation.z = currentHourRot;
+                if (minutePivotMesh) minutePivotMesh.rotation.z = currentMinuteRot;
+
+                if (!isDragging) {
+                    clock3DGroup.rotation.y += 0.003;
+                }
+
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+
+        /* WORKABLE TIME SLIDER & SHIFT SYNCHRONIZATION */
+        function handleTimeSliderInput(val) {
+            const percent = val / 100;
+            
+            const totalStartMinutes = 6 * 60; // 06:00 AM
+            const currentTotalMinutes = totalStartMinutes + Math.round(percent * 18 * 60);
+            
+            const hrs = Math.floor(currentTotalMinutes / 60);
+            const mins = currentTotalMinutes % 60;
+            const period = hrs >= 12 && hrs < 24 ? 'PM' : 'AM';
+            const displayHrs = (hrs % 12 === 0) ? 12 : (hrs % 12);
+            const formattedTime = `${displayHrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')} ${period}`;
+
+            document.getElementById('slider-hour-readout').textContent = formattedTime;
+
+            targetHourRot = -percent * Math.PI * 3;
+            targetMinuteRot = -percent * Math.PI * 36;
+
+            const shifts = SHAKTI_CONFIG.shifts[builderState.duration];
+            const activeIdx = Math.min(Math.floor(percent * shifts.length), shifts.length - 1);
+            const activeShift = shifts[activeIdx];
+
+            if (activeShift && builderState.shiftObj.id !== activeShift.id) {
+                builderState.shiftObj = activeShift;
+                document.getElementById('clock-3d-slot-display').textContent = `${activeShift.name} (${activeShift.time})`;
+                updateTimelineBar(activeShift.left, activeShift.width, `${activeShift.name} (${activeShift.time})`, `${builderState.duration} Hours`);
+                updateBuilderUI();
+            }
+        }
+
+        /* SHIFT EXPLAINER RENDERERS WITH INTERACTIVE CARDS */
+        function setShiftTab(dur) {
+            [6, 12, 18].forEach(d => {
+                const btn = document.getElementById(`tab-btn-${d}`);
+                if (d === dur) {
+                    btn.className = 'px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all border border-brand-gold/40 bg-brand-gold text-black shadow-md shadow-brand-gold/10';
+                } else {
+                    btn.className = 'px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all border border-brand-border bg-brand-surface text-brand-text hover:border-brand-gold';
+                }
+            });
+            renderShiftExplainer(dur);
+        }
+
+        function renderShiftExplainer(dur) {
+            const container = document.getElementById('shift-cards-container');
+            const list = SHAKTI_CONFIG.shifts[dur];
+            container.innerHTML = '';
+
+            list.forEach((s) => {
+                const isSelected = builderState.shiftObj.id === s.id && builderState.duration === dur;
+                const card = document.createElement('div');
+                card.className = `palace-panel p-6 rounded-2xl slot-card-interactive cursor-pointer ${isSelected ? 'border-brand-gold bg-brand-gold/10' : 'border-brand-border'}`;
+                card.onclick = () => {
+                    builderSelectDuration(dur);
+                    builderState.shiftObj = s;
+                    document.getElementById('clock-3d-slot-display').textContent = `${s.name} (${s.time})`;
+                    renderShiftExplainer(dur);
+                    updateBuilderUI();
+                    document.getElementById('builder').scrollIntoView({ behavior: 'smooth' });
+                };
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-brand-gold uppercase">${s.name} Slot</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded bg-brand-gold/10 text-brand-gold border border-brand-gold/20">${dur} Hours</span>
+                    </div>
+                    <div class="text-xl font-bold text-white mb-2">${s.time}</div>
+                    <p class="text-xs text-brand-muted leading-relaxed mb-4">${s.desc}</p>
+                    <span class="text-xs text-brand-gold font-bold flex items-center gap-1">Select This Shift →</span>
+                `;
+                container.appendChild(card);
+            });
+
+            updateTimelineBar(list[0].left, list[0].width, `${list[0].name} (${list[0].time})`, `${dur} Hours`);
+        }
+
+        function updateTimelineBar(left, width, label, dur) {
+            const bar = document.getElementById('timeline-bar');
+            bar.style.left = left;
+            bar.style.width = width;
+            document.getElementById('timeline-label').textContent = `Active Shift Preview: ${label}`;
+            document.getElementById('timeline-duration').textContent = dur;
+        }
+
+        /* INTERACTIVE PAYMENT METHOD SELECTOR */
+        function selectPaymentMethod(mode) {
+            const modeMap = {
+                'upi': 'UPI / GPay / PhonePe',
+                'netbanking': 'Net Banking Transfer',
+                'counter': 'Pay at Counter'
+            };
+
+            builderState.paymentMode = modeMap[mode];
+
+            ['upi', 'netbanking', 'counter'].forEach(p => {
+                const card = document.getElementById(`pay-${p}`);
+                if (p === mode) {
+                    card.className = 'palace-card p-4 rounded-xl cursor-pointer border-brand-gold bg-brand-gold/10 text-center shadow-lg shadow-brand-gold/10';
+                } else {
+                    card.className = 'palace-card p-4 rounded-xl cursor-pointer border-brand-border text-center hover:border-brand-gold/40';
+                }
+            });
+
+            updateBuilderUI();
+        }
+
+        /* BUILDER INTERACTION LOGIC */
+        function builderSelectDuration(dur) {
+            builderState.duration = dur;
+            builderState.shiftObj = SHAKTI_CONFIG.shifts[dur][0];
+
+            [6, 12, 18].forEach(d => {
+                const btn = document.getElementById(`b-dur-${d}`);
+                if (d === dur) {
+                    btn.className = 'p-4 rounded-xl border text-left transition-all border-brand-gold bg-brand-gold/10';
+                    btn.querySelector('.text-2xl').className = 'block text-2xl font-bold text-brand-gold';
+                } else {
+                    btn.className = 'p-4 rounded-xl border text-left transition-all border-brand-border bg-brand-card hover:border-brand-gold';
+                    btn.querySelector('.text-2xl').className = 'block text-2xl font-bold text-white';
+                }
+            });
+
+            renderBuilderTimingOptions();
+            updateBuilderUI();
+        }
+
+        function renderBuilderTimingOptions() {
+            const container = document.getElementById('builder-timing-options');
+            const list = SHAKTI_CONFIG.shifts[builderState.duration];
+            container.innerHTML = '';
+
+            list.forEach(s => {
+                const btn = document.createElement('button');
+                const isSelected = builderState.shiftObj.id === s.id;
+                btn.className = `p-4 rounded-xl border text-left transition-all ${isSelected ? 'border-brand-gold bg-brand-gold/10' : 'border-brand-border bg-brand-card hover:border-brand-gold'}`;
+                btn.onclick = () => {
+                    builderState.shiftObj = s;
+                    document.getElementById('clock-3d-slot-display').textContent = `${s.name} (${s.time})`;
+                    renderBuilderTimingOptions();
+                    updateBuilderUI();
+                };
+                btn.innerHTML = `
+                    <span class="block text-base font-bold ${isSelected ? 'text-brand-gold' : 'text-white'}">${s.name} Slot</span>
+                    <span class="text-xs text-brand-text/80 block mt-1">${s.time}</span>
+                    <span class="text-[10px] text-brand-muted block mt-1.5">${s.desc}</span>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function builderSelectMonths(m) {
+            builderState.months = m;
+            [1, 2, 3].forEach(mo => {
+                const btn = document.getElementById(`b-month-${mo}`);
+                if (mo === m) {
+                    btn.className = 'p-3.5 rounded-xl border text-center transition-all border-brand-gold bg-brand-gold/10';
+                    btn.querySelector('.text-base').className = 'block text-base font-bold text-brand-gold';
+                } else {
+                    btn.className = 'p-3.5 rounded-xl border text-center transition-all border-brand-border bg-brand-card hover:border-brand-gold';
+                    btn.querySelector('.text-base').className = 'block text-base font-bold text-white';
+                }
+            });
+            updateBuilderUI();
+        }
+
+        function builderNextStep() {
+            if (builderState.step < 5) {
+                builderState.step++;
+                updateBuilderUI();
+            }
+        }
+
+        function builderPrevStep() {
+            if (builderState.step > 1) {
+                builderState.step--;
+                updateBuilderUI();
+            }
+        }
+
+        function updateBuilderUI() {
+            for (let i = 1; i <= 5; i++) {
+                const panel = document.getElementById(`builder-step-${i}`);
+                const pill = document.getElementById(`step-pill-${i}`);
+
+                if (i === builderState.step) {
+                    panel.classList.remove('hidden');
+                    pill.className = 'step-pill active px-3 py-1.5 rounded-full text-[11px] font-semibold flex items-center gap-1 shrink-0';
+                } else if (i < builderState.step) {
+                    panel.classList.add('hidden');
+                    pill.className = 'step-pill completed px-3 py-1.5 rounded-full text-[11px] font-semibold flex items-center gap-1 shrink-0';
+                } else {
+                    panel.classList.add('hidden');
+                    pill.className = 'step-pill px-3 py-1.5 rounded-full text-[11px] font-semibold text-brand-muted border border-brand-border flex items-center gap-1 shrink-0';
+                }
+            }
+
+            document.getElementById('builder-prev-btn').disabled = builderState.step === 1;
+            const nextBtn = document.getElementById('builder-next-btn');
+            if (builderState.step === 5) {
+                nextBtn.textContent = 'Reserve Now';
+                nextBtn.onclick = openReservationModal;
+            } else {
+                nextBtn.textContent = 'Next Step →';
+                nextBtn.onclick = builderNextStep;
+            }
+
+            const baseMonthly = SHAKTI_CONFIG.prices.monthly[builderState.duration];
+            const discountPerMonth = SHAKTI_CONFIG.prices.flatDiscounts[builderState.months];
+            const effectiveMonthly = baseMonthly - discountPerMonth;
+            const total = effectiveMonthly * builderState.months;
+
+            document.getElementById('side-dur').textContent = `${builderState.duration} Hours`;
+            document.getElementById('side-shift').textContent = builderState.shiftObj.name;
+            document.getElementById('side-time').textContent = builderState.shiftObj.time;
+            document.getElementById('side-months').textContent = `${builderState.months} Month${builderState.months > 1 ? 's' : ''}`;
+            document.getElementById('side-payment').textContent = builderState.paymentMode;
+            
+            document.getElementById('side-monthly-rate').textContent = `₹${effectiveMonthly.toLocaleString('en-IN')} / mo`;
+            document.getElementById('side-price').textContent = `₹${total.toLocaleString('en-IN')}`;
+
+            const savingsBadge = document.getElementById('side-savings');
+            if (builderState.months > 1) {
+                const totalSaved = discountPerMonth * builderState.months;
+                savingsBadge.textContent = `FLAT ₹${discountPerMonth}/MO DISCOUNT • SAVED ₹${totalSaved} OVERALL`;
+                savingsBadge.classList.remove('hidden');
+            } else {
+                savingsBadge.classList.add('hidden');
+            }
+
+            document.getElementById('step-3-shift-summary').textContent = `${builderState.duration} Hours — ${builderState.shiftObj.name} (${builderState.shiftObj.time})`;
+            document.getElementById('sum-dur').textContent = `${builderState.duration} Hours`;
+            document.getElementById('sum-slot').textContent = `${builderState.shiftObj.name} (${builderState.shiftObj.time})`;
+            document.getElementById('sum-months').textContent = `${builderState.months} Month${builderState.months > 1 ? 's' : ''}`;
+            document.getElementById('sum-payment').textContent = builderState.paymentMode;
+        }
+
+        /* EXAM CATEGORY RENDERERS */
+        function filterExams(category) {
+            document.querySelectorAll('#exam-filter-pills button').forEach(btn => {
+                btn.className = 'exam-filter-btn px-4 py-2 rounded-full text-xs font-bold uppercase border border-brand-border bg-brand-card text-brand-text hover:border-brand-gold shrink-0';
+            });
+            event.target.className = 'exam-filter-btn active px-4 py-2 rounded-full text-xs font-bold uppercase border border-brand-gold bg-brand-gold text-black shrink-0';
+            renderExams(category);
+        }
+
+        function renderExams(category) {
+            const grid = document.getElementById('exam-cards-grid');
+            grid.innerHTML = '';
+            
+            const filtered = category === 'all' ? SHAKTI_CONFIG.exams : SHAKTI_CONFIG.exams.filter(e => e.category === category);
+            
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'palace-card p-6 rounded-2xl border-brand-border flex flex-col justify-between';
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center gap-3 mb-3.5">
+                            <div class="w-10 h-10 rounded-xl bg-brand-gold/10 border border-brand-gold/20 flex items-center justify-center text-brand-gold shrink-0">
+                                <i data-lucide="${item.icon}" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white text-base">${item.name}</h3>
+                                <span class="text-[11px] text-brand-muted block">${item.fullname}</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            ${item.tags.map(t => `<span class="px-2 py-0.5 rounded bg-brand-surface border border-brand-border text-[10px] text-brand-muted">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                    <a href="#builder" onclick="builderSelectDuration(12)" class="text-xs font-bold text-brand-gold hover:underline inline-flex items-center gap-1 mt-2">
+                        <span>Reserve Study Shift</span> <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                    </a>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        /* CLEAN & CLASSIC FACILITIES RENDERER */
+        function renderFacilities() {
+            const grid = document.getElementById('facilities-grid');
+            grid.innerHTML = '';
+            SHAKTI_CONFIG.facilities.forEach(f => {
+                const card = document.createElement('div');
+                card.className = 'palace-card p-6 rounded-2xl border-brand-border facility-card flex flex-col justify-between';
+                card.innerHTML = `
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-brand-gold/10 border border-brand-gold/30 flex items-center justify-center text-brand-gold mb-4 shadow-lg shadow-brand-gold/5">
+                            <i data-lucide="${f.icon}" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-2">${f.title}</h3>
+                        <p class="text-xs text-brand-muted leading-relaxed">${f.desc}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function filterFacilities() {
+            const query = document.getElementById('facility-search').value.toLowerCase();
+            document.querySelectorAll('.facility-card').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+
+        /* FAQ RENDERER */
+        function renderFaqs() {
+            const container = document.getElementById('faq-accordion');
+            container.innerHTML = '';
+            SHAKTI_CONFIG.faqs.forEach((faq, idx) => {
+                const item = document.createElement('div');
+                item.className = 'palace-panel rounded-2xl border-brand-border overflow-hidden';
+                item.innerHTML = `
+                    <button onclick="toggleFaq(${idx})" class="w-full p-5 text-left flex justify-between items-center font-bold text-xs sm:text-sm text-white hover:text-brand-gold transition-colors">
+                        <span class="pr-2">${faq.q}</span>
+                        <i data-lucide="chevron-down" id="faq-icon-${idx}" class="w-4 h-4 text-brand-gold transition-transform shrink-0"></i>
+                    </button>
+                    <div id="faq-ans-${idx}" class="hidden px-5 pb-5 text-xs text-brand-muted leading-relaxed border-t border-brand-border pt-3">
+                        ${faq.a}
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+            lucide.createIcons();
+        }
+
+        function toggleFaq(idx) {
+            const ans = document.getElementById(`faq-ans-${idx}`);
+            const icon = document.getElementById(`faq-icon-${idx}`);
+            const isHidden = ans.classList.contains('hidden');
+
+            if (isHidden) {
+                ans.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                ans.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        /* RESERVATION MODAL WORKFLOW */
+        function openReservationModal() {
+            const modal = document.getElementById('reservation-modal');
+            const baseMonthly = SHAKTI_CONFIG.prices.monthly[builderState.duration];
+            const discountPerMonth = SHAKTI_CONFIG.prices.flatDiscounts[builderState.months];
+            const effectiveMonthly = baseMonthly - discountPerMonth;
+            const total = effectiveMonthly * builderState.months;
+
+            document.getElementById('modal-dur').textContent = `${builderState.duration} Hours`;
+            document.getElementById('modal-slot').textContent = `${builderState.shiftObj.name} (${builderState.shiftObj.time})`;
+            document.getElementById('modal-months').textContent = `${builderState.months} Month${builderState.months > 1 ? 's' : ''}`;
+            document.getElementById('modal-payment').textContent = builderState.paymentMode;
+            document.getElementById('modal-price').textContent = `₹${total.toLocaleString('en-IN')}`;
+
+            document.getElementById('reservation-form').classList.remove('hidden');
+            document.getElementById('modal-success').classList.add('hidden');
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function closeReservationModal() {
+            const modal = document.getElementById('reservation-modal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function submitReservationForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('res-name').value;
+            const phone = document.getElementById('res-phone').value;
+            const msg = document.getElementById('res-msg').value;
+
+            const baseMonthly = SHAKTI_CONFIG.prices.monthly[builderState.duration];
+            const discountPerMonth = SHAKTI_CONFIG.prices.flatDiscounts[builderState.months];
+            const effectiveMonthly = baseMonthly - discountPerMonth;
+            const total = effectiveMonthly * builderState.months;
+
+            const text = `Hello Shakti Library Rampur, I would like to confirm my study membership reservation details:%0A%0A` +
+                         `*Name:* ${encodeURIComponent(name)}%0A` +
+                         `*Phone:* ${encodeURIComponent(phone)}%0A` +
+                         `*Shift:* ${builderState.duration} Hours (${builderState.shiftObj.name})%0A` +
+                         `*Timing:* ${builderState.shiftObj.time}%0A` +
+                         `*Duration:* ${builderState.months} Month(s)%0A` +
+                         `*Payment Mode:* ${encodeURIComponent(builderState.paymentMode)}%0A` +
+                         `*Effective Monthly Rate:* ₹${effectiveMonthly}%0A` +
+                         `*Total Fee:* ₹${total}%0A` +
+                         (msg ? `*Preparation/Notes:* ${encodeURIComponent(msg)}` : '');
+
+            const whatsappUrl = `https://wa.me/916397807935?text=${text}`;
+
+            document.getElementById('reservation-form').classList.add('hidden');
+            const successBox = document.getElementById('modal-success');
+            document.getElementById('whatsapp-send-link').href = whatsappUrl;
+            successBox.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
